@@ -1,0 +1,25 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 13b75c95f34a00d4e8c04f76b73312e6, type: 3}
+  m_Name: WaterFall Right
+  m_EditorClassIdentifier: 
+  m_AnimatedSprites:
+  - {fileID: 1945304241, guid: 8b0c2ef7be1bd694ab33fc993f49ae45, type: 3}
+  - {fileID: -1923267105, guid: 8b0c2ef7be1bd694ab33fc993f49ae45, type: 3}
+  - {fileID: -346391565, guid: 8b0c2ef7be1bd694ab33fc993f49ae45, type: 3}
+  - {fileID: 727272935, guid: 8b0c2ef7be1bd694ab33fc993f49ae45, type: 3}
+  m_MinSpeed: 7
+  m_MaxSpeed: 7
+  m_AnimationStartTime: 0
+  m_AnimationStartFrame: 0
+  m_TileColliderType: 0
+  m_TileAnimationFlags: 0
