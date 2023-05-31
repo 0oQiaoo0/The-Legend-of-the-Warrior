@@ -1,7 +1,9 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Diagnostics.Eventing.Reader;
 using System.Xml.Serialization;
+using UnityEditor.Build;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.InputSystem.Layouts;
@@ -14,26 +16,46 @@ public class PlayerController : MonoBehaviour
     private CapsuleCollider2D capsuleCollider;
     private BoxCollider2D boxCollider;
     private PlayerAnimation playerAnimation;
+    private Character character;
+    public UIManager uiManager;
     public Vector2 inputDirection;
+    
     [Header("基本参数")]
     public float speed;
     private float runSpeed;
     private float walkSpeed;
     public float jumpForce;
+    public float wallJumpForce;
+    public float wallJumpTime;
     public float hurtForce;
+
+    public float slideDistance;
+    public float slideFrameSpeed;
+    public float slidePowerCost;
+    private Coroutine slideCouroutine;
+
     private Vector2 originalOffset;
     private Vector2 originalSize;
+
+    public float lastDirTime;
+    private float lastLeftTimeCounter;
+    private float lastRightTimeCounter;
     [Header("物理材质")]
     public PhysicsMaterial2D normal;
     public PhysicsMaterial2D wall;
+    public PhysicsMaterial2D OnWall;
     [Header("状态")]
     public bool isCrouch;
     public bool isHurt;
     public bool isDead;
     public bool isAttack;
+    public bool isWallJump;
+    public bool isSlide;
+
 
     private void Awake()
     {
+        character = GetComponent<Character>();
         rb = GetComponent<Rigidbody2D>();
         inputControl = new PlayerInoutControl();
         physicsCheck = GetComponent<PhysicsCheck>();
@@ -44,7 +66,7 @@ public class PlayerController : MonoBehaviour
         originalSize = capsuleCollider.size;
 
         inputControl.Gameplay.Jump.started += Jump;
-        inputControl.Gameplay.CrouchButton.started += CrouchStart;
+        inputControl.Gameplay.CrouchButton.started += CrouchorSlideStart;
         inputControl.Gameplay.CrouchButton.canceled += CrouchEnd;
 
         #region 强制走路
@@ -90,7 +112,7 @@ public class PlayerController : MonoBehaviour
 
     private void FixedUpdate()
     {
-        if (!isHurt&&!isAttack&&!isCrouch)
+        if (!isHurt&&!isAttack&&!isCrouch&&!isWallJump&&!isSlide)
             Move();
     }
 
@@ -119,23 +141,98 @@ public class PlayerController : MonoBehaviour
     #region UnityEvent
     private void Jump(InputAction.CallbackContext obj)
     {
-        if(IsGround())
-        rb.AddForce(transform.up * jumpForce, ForceMode2D.Impulse);
+        if (IsGround())
+        {
+            if (isSlide)
+            {
+                SlideEnd();
+                StopCoroutine(slideCouroutine);
+            }
+            
+            rb.AddForce(transform.up * jumpForce, ForceMode2D.Impulse);
+        }
+        if (!physicsCheck.isGround && rb.velocity.y < 0.01f)
+        {
+            Vector2 forceAngle = new();//can add a change
+            if (physicsCheck.touchLeftWall && lastLeftTimeCounter > 0) forceAngle = new Vector2(1f, 2f);
+            if (physicsCheck.touchRightWall && lastRightTimeCounter > 0) forceAngle = new Vector2(-1f, 2f);
+
+            rb.velocity = Vector2.zero;
+            rb.AddForce(forceAngle * wallJumpForce, ForceMode2D.Impulse);
+            isWallJump = true;
+
+        }
     }
-    private void CrouchStart(InputAction.CallbackContext obj)
+    private void CrouchorSlideStart(InputAction.CallbackContext obj)
     {
         if (IsGround())
         {
-            isCrouch = true;
-            capsuleCollider.offset = new Vector2(-0.05f, 0.85f);
-            capsuleCollider.size = new Vector2(0.7f, 1.7f);
+            if (Mathf.Abs(rb.velocity.x) < 0.1f)
+            {
+                isCrouch = true;
+                capsuleCollider.offset = new Vector2(-0.05f, 0.85f);
+                capsuleCollider.size = new Vector2(0.7f, 1.7f);
+                physicsCheck.resetOffset();
+            }
+            else
+            {
+                if(!isSlide)
+                {
+                    if(character.currentPower >= slidePowerCost) 
+                    {
+                        SlideBegin();
+                    }
+                    else
+                    {
+                        uiManager.PowerLack();
+                    }
+                }
+            }
         }
+    }
+    private void SlideBegin()
+    {
+        isSlide = true;
+        gameObject.layer = 2;//ignore trigger
+        var targetPos = new Vector3(transform.position.x + slideDistance * transform.localScale.x, transform.position.y);
+        slideCouroutine = StartCoroutine(TriggerSlide(targetPos));
+        character.PowerSpend(slidePowerCost);
+    }
+    private IEnumerator TriggerSlide(Vector3 target)
+    {
+        rb.MovePosition(target);
+        while (MathF.Abs(target.x - transform.position.x) > 0.1f)
+        {
+            if (!FrontIsGround() || TouchFrontWall()) 
+            {
+                SlideEnd();
+                yield break;
+            }
+
+            rb.MovePosition(new Vector2(transform.position.x + transform.localScale.x * slideFrameSpeed, transform.position.y));
+
+            yield return null;
+        }
+        SlideEnd();
+    }
+    private bool TouchFrontWall()
+    {
+        return physicsCheck.touchLeftWall && transform.localScale.x == -1 || physicsCheck.touchRightWall && transform.localScale.x == 1;
+    }
+    private void SlideEnd()
+    {
+        isSlide = false;
+        gameObject.layer = 7;//player
     }
     private void CrouchEnd(InputAction.CallbackContext obj)
     {
-        isCrouch = false;
-        capsuleCollider.size = originalSize;
-        capsuleCollider.offset = originalOffset;
+        if (isCrouch)
+        {
+            isCrouch = false;
+            capsuleCollider.size = originalSize;
+            capsuleCollider.offset = originalOffset;
+            physicsCheck.resetOffset();
+        }
     }
 
     private void PlayerAttack(InputAction.CallbackContext obj)
@@ -160,6 +257,11 @@ public class PlayerController : MonoBehaviour
         }
         
     }
+
+    public bool FrontIsGround()
+    {
+        return transform.localScale.x == 1 && physicsCheck.rightIsGround || transform.localScale.x == -1 && physicsCheck.leftIsGround;
+    }
     public void GetHurt(Transform attacker)
     {
         isHurt = true;
@@ -176,6 +278,21 @@ public class PlayerController : MonoBehaviour
     }
     private void CheckState()
     {
-        boxCollider.sharedMaterial = physicsCheck.isGround ? normal : wall;
+        boxCollider.sharedMaterial = IsGround() ? normal : physicsCheck.onWall ? OnWall : wall;
+        capsuleCollider.sharedMaterial = IsGround() ? normal : physicsCheck.onWall ? OnWall : wall;
+
+        if (isWallJump) StartCoroutine(WallJumpCounter());
+
+        if (lastLeftTimeCounter > -1) lastLeftTimeCounter -= Time.deltaTime;
+        if (lastRightTimeCounter > -1) lastRightTimeCounter -= Time.deltaTime;
+
+        if (inputDirection.x > 0) lastRightTimeCounter = lastDirTime;
+        if (inputDirection.x < 0) lastLeftTimeCounter = lastDirTime;
+    }
+
+    IEnumerator WallJumpCounter()
+    {
+        yield return new WaitForSeconds(wallJumpTime);
+        isWallJump = false;
     }
 }

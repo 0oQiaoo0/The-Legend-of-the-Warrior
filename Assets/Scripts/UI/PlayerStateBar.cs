@@ -8,10 +8,13 @@ public class PlayerStateBar : MonoBehaviour
     public Image healthDelayImage;
     public Image powerImage;
 
+    private Animator powerFillYellowAnimator;
+
     public float delaySpeed;
 
     private void Awake()
     {
+        powerFillYellowAnimator = powerImage.GetComponent<Animator>();
         healthDelayImage.fillAmount = 1f;
     }
 
@@ -37,5 +40,20 @@ public class PlayerStateBar : MonoBehaviour
             else healthDelayImage.fillAmount -= Time.deltaTime * delaySpeed;
             yield return null;
         }
+    }
+
+    public void OnPowerChange(float persentage)
+    {
+        powerImage.fillAmount = persentage;
+    }
+
+    public void PowerLack()
+    {
+        powerFillYellowAnimator.SetBool("isPowerLack", true);
+    }
+
+    public void PowerLackEnd()
+    {
+        powerFillYellowAnimator.SetBool("isPowerLack", false);
     }
 }

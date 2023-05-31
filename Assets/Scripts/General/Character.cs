@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -8,18 +9,24 @@ public class Character : MonoBehaviour
     [Header("基本属性")]
     public float maxHealth;
     public float currentHealth;
+    public float maxPower;
+    public float currentPower;
+    public float powerRecoverSpeed;
     [Header("受伤无敌")]
     public float invulnerableDuration;
     [HideInInspector] public float invulnerableCounter;
     public bool invulnerable;
 
     public UnityEvent<Character> OnHealthChange;
+    public UnityEvent<Character> OnPowerChange;
     public UnityEvent<Transform> OnTakeDamage;
     public UnityEvent OnDie;
     private void Start()
     {
+        currentPower = maxPower;
         currentHealth = maxHealth;
         OnHealthChange?.Invoke(this);
+        OnPowerChange?.Invoke(this);
     }
     private void Update()
     {
@@ -31,7 +38,17 @@ public class Character : MonoBehaviour
                 invulnerable = false;
             }
         }
+        RecoverPower();
     }
+
+    private void RecoverPower()
+    {
+        if (currentPower + Time.deltaTime * powerRecoverSpeed >= maxPower) currentPower = maxPower;
+        else currentPower += Time.deltaTime * powerRecoverSpeed;
+
+        OnPowerChange?.Invoke(this);
+    }
+
     public void TakeDamage(Attack attacker)
     {
         if (!invulnerable)
@@ -59,5 +76,11 @@ public class Character : MonoBehaviour
     {
         invulnerable = true;
         invulnerableCounter = invulnerableDuration;
+    }
+
+    public void PowerSpend(float cost)
+    {
+        currentPower -= cost;
+        OnPowerChange?.Invoke(this);
     }
 }

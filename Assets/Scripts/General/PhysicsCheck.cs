@@ -6,6 +6,8 @@ public class PhysicsCheck : MonoBehaviour
 {
     private CapsuleCollider2D capsuleCollider;
     private BoxCollider2D boxCollider;
+    private PlayerController playerController;
+    private Rigidbody2D rb;
     [Header("检测参数")]
     public bool manual;
     public Vector2 bottomOffset;
@@ -21,25 +23,36 @@ public class PhysicsCheck : MonoBehaviour
     public bool rightIsGround;
     public bool touchLeftWall;
     public bool touchRightWall;
+    public bool onWall;
     private void Awake()
     {
+        
         capsuleCollider = GetComponent<CapsuleCollider2D>() ?? null;
         boxCollider = GetComponent<BoxCollider2D>() ?? null;
+        if(gameObject.layer == 7)//isPlayer
+        {
+            rb = GetComponent<Rigidbody2D>();
+            playerController = GetComponent<PlayerController>();
+        }
         if (!manual)
         {
-            if(boxCollider)
-            {
-                bottomOffset = new Vector2(boxCollider.offset.x, boxCollider.offset.y - boxCollider.size.y / 2);
-                leftBottomOffset = new Vector2(boxCollider.offset.x - boxCollider.size.x / 2, boxCollider.offset.y - boxCollider.size.y / 2);
-                rightBottomOffset = new Vector2(boxCollider.offset.x + boxCollider.size.x / 2, boxCollider.offset.y - boxCollider.size.y / 2);
-            }
-            if(capsuleCollider)
-            {
-                rightOffset = new Vector2(capsuleCollider.offset.x + capsuleCollider.bounds.size.x / 2, capsuleCollider.offset.y);
-                leftOffset = new Vector2(capsuleCollider.offset.x - capsuleCollider.bounds.size.x / 2, capsuleCollider.offset.y);
-            }
+            resetOffset();
         }
         Check();
+    }
+    public void resetOffset()
+    {
+        //if(boxCollider)
+        {
+            bottomOffset = new Vector2(boxCollider.offset.x, boxCollider.offset.y - boxCollider.size.y / 2);
+            leftBottomOffset = new Vector2(boxCollider.offset.x - boxCollider.size.x / 2, boxCollider.offset.y - boxCollider.size.y / 2);
+            rightBottomOffset = new Vector2(boxCollider.offset.x + boxCollider.size.x / 2, boxCollider.offset.y - boxCollider.size.y / 2);
+        }
+        //if(capsuleCollider)
+        {
+            rightOffset = new Vector2(capsuleCollider.offset.x + capsuleCollider.bounds.size.x / 2, capsuleCollider.offset.y);
+            leftOffset = new Vector2(capsuleCollider.offset.x - capsuleCollider.bounds.size.x / 2, capsuleCollider.offset.y);
+        }
     }
     private void Update()
     {
@@ -48,25 +61,28 @@ public class PhysicsCheck : MonoBehaviour
     public void Check()
     {
         //检测地面
-        if (boxCollider)
+        //if (boxCollider)
         {
             isGround = Physics2D.OverlapCircle((Vector2)transform.position + bottomOffset, checkRadius, groundLayer);
             leftIsGround = Physics2D.OverlapCircle((Vector2)transform.position + leftBottomOffset, checkRadius, groundLayer);
             rightIsGround = Physics2D.OverlapCircle((Vector2)transform.position + rightBottomOffset, checkRadius, groundLayer);
         }
         //墙体判断
-        if (capsuleCollider)
+        //if (capsuleCollider)
         {
             touchLeftWall = Physics2D.OverlapCircle((Vector2)transform.position + leftOffset, checkRadius, groundLayer);
             touchRightWall = Physics2D.OverlapCircle((Vector2)transform.position + rightOffset, checkRadius, groundLayer);
         }
-        
+        if(playerController)
+        {
+            onWall = !isGround && rb.velocity.y < 0.01f && (touchLeftWall && playerController.inputDirection.x < 0f || touchRightWall && playerController.inputDirection.x > 0f);
+        }
     }
 
     public void ChangeDirection()
     {
         float tmp;
-        if (boxCollider)
+        //if (boxCollider)
         {
             //bottomOffset翻转
             bottomOffset.x = -bottomOffset.x;
@@ -75,7 +91,7 @@ public class PhysicsCheck : MonoBehaviour
             leftBottomOffset.x = -rightBottomOffset.x;
             rightBottomOffset.x = -tmp;
         }
-        if (capsuleCollider)
+        //if (capsuleCollider)
         {
             //leftOffset & rightOffset翻转
             tmp = leftOffset.x;
@@ -87,13 +103,13 @@ public class PhysicsCheck : MonoBehaviour
 
     private void OnDrawGizmosSelected()
     {
-        if (boxCollider)
+        //if (boxCollider)
         {
             Gizmos.DrawWireSphere((Vector2)transform.position + bottomOffset, checkRadius);
             Gizmos.DrawWireSphere((Vector2)transform.position + leftBottomOffset, checkRadius);
             Gizmos.DrawWireSphere((Vector2)transform.position + rightBottomOffset, checkRadius);
         }
-        if (capsuleCollider)
+        //if (capsuleCollider)
         {
             Gizmos.DrawWireSphere((Vector2)transform.position + leftOffset, checkRadius);
             Gizmos.DrawWireSphere((Vector2)transform.position + rightOffset, checkRadius);

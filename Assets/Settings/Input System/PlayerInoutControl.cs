@@ -307,6 +307,17 @@ public partial class @PlayerInoutControl: IInputActionCollection2, IDisposable
                 },
                 {
                     ""name"": """",
+                    ""id"": ""e424f7c4-4f52-434c-9305-c9bc5cc14d3a"",
+                    ""path"": ""<Keyboard>/ctrl"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""Keyboard&Mouse"",
+                    ""action"": ""CrouchButton"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
                     ""id"": ""7c7f5f53-6722-4969-892a-e4c172706799"",
                     ""path"": ""<Mouse>/leftButton"",
                     ""interactions"": """",
