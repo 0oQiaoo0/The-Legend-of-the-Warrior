@@ -151,7 +151,7 @@ public class PlayerController : MonoBehaviour
             
             rb.AddForce(transform.up * jumpForce, ForceMode2D.Impulse);
         }
-        if (!physicsCheck.isGround && rb.velocity.y < 0.01f)
+        if (physicsCheck.onWall && rb.velocity.y < 0.01f)
         {
             Vector2 forceAngle = new();//can add a change
             if (physicsCheck.touchLeftWall && lastLeftTimeCounter > 0) forceAngle = new Vector2(1f, 2f);

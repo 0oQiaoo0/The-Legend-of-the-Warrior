@@ -49,6 +49,18 @@ public class Character : MonoBehaviour
         OnPowerChange?.Invoke(this);
     }
 
+    private void OnTriggerStay2D(Collider2D collision)
+    {
+        if (collision.CompareTag("Water"))
+        {
+            Debug.Log("water");
+            //ËÀÍö¡¢¸üÐÂÑªÁ¿
+            OnDie?.Invoke();
+            currentHealth = 0;
+            OnHealthChange.Invoke(this);
+        }
+    }
+
     public void TakeDamage(Attack attacker)
     {
         if (!invulnerable)
