@@ -14,7 +14,7 @@ public class Boar : GroundEnemy
         patrolState = new BoarPartolState();
         chaseState = new BoarChaseState();
     }
-    #region ״̬���
+    #region 状态相关
     protected override void OnEnable()
     {
         currentState = patrolState;

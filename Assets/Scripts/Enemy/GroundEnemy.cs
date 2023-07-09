@@ -7,7 +7,7 @@ public abstract class GroundEnemy : Enemy
 {
     [HideInInspector] public PhysicsCheck physicsCheck;
 
-    [Header("¼ì²âÍæ¼Ò")]
+    [Header("æ£€æµ‹çŽ©å®¶")]
     public Vector2 checkSize;
 
     protected override void Awake()

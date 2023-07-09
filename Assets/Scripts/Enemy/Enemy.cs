@@ -9,32 +9,32 @@ public abstract class Enemy : MonoBehaviour
     [HideInInspector] public Rigidbody2D rb;
     [HideInInspector] public Animator animator;
     
-    [Header("»ù±¾²ÎÊı")]
+    [Header("åŸºæœ¬å‚æ•°")]
     public float normalSpeed;
     public float chaseSpeed;
     [HideInInspector] public float currentSpeed;
     protected int faceDir;// right 1 left -1;
     /// <summary>
-    /// ×ÔÉíÊÜÉËÊ±ÊÜµ½µÄÁ¦
+    /// è‡ªèº«å—ä¼¤æ—¶å—åˆ°çš„åŠ›
     /// </summary>
     public float hurtForce;
     /// <summary>
-    /// ×ÔÉíÊÜÉËµÄ³ÖĞøÊ±¼ä
+    /// è‡ªèº«å—ä¼¤çš„æŒç»­æ—¶é—´
     /// </summary>
     public float hurtDuration;
     [HideInInspector] public Transform attacker;
-    [Header("¼ì²âÍæ¼Ò")]
+    [Header("æ£€æµ‹ç©å®¶")]
     public Vector2 centerOffset;
     public float checkDistance;
     public LayerMask attackLayer;
 
-    [Header("¼ÆÊ±Æ÷")]
+    [Header("è®¡æ—¶å™¨")]
     public float waitTime;
     [HideInInspector] public float waitTimeCounter;
 
     public float lostTime;
     [HideInInspector] public float lostTimeCounter;
-    [Header("×´Ì¬")]
+    [Header("çŠ¶æ€")]
     public bool isWait;
     public bool isHurt;
     public bool isDead;
@@ -69,7 +69,7 @@ public abstract class Enemy : MonoBehaviour
         transform.localScale = new Vector3(-transform.localScale.x, transform.localScale.y, transform.localScale.z);
     }
     /// <summary>
-    /// ¼ÆÊ±Æ÷
+    /// è®¡æ—¶å™¨
     /// </summary>
     protected virtual void TimeCounter()
     {
@@ -118,19 +118,19 @@ public abstract class Enemy : MonoBehaviour
     
 
     public abstract void SwitchState(NPCState state);
-    #region ÊÂ¼şÖ´ĞĞ·½·¨
+    #region äº‹ä»¶æ‰§è¡Œæ–¹æ³•
     public void OnTakeDamage(Transform attackTrans)
     {
         attacker = attackTrans;
 
-        //×ªÉí
+        //è½¬èº«
         Vector2 dir = new Vector2(transform.position.x - attackTrans.position.x,0).normalized;
         if (dir.x < 0 && faceDir == -1 || dir.x > 0 && faceDir == 1) 
         {
             ChangeDirection();
         }
 
-        //ÊÜÉË±»»÷ÍË
+        //å—ä¼¤è¢«å‡»é€€
         isHurt = true;
         animator.SetTrigger("hurt");
         StartCoroutine(OnHurt(dir));

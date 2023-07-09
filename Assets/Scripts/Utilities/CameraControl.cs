@@ -6,7 +6,7 @@ using System;
 
 public class CameraControl : MonoBehaviour
 {
-    [Header("ÊÂ¼ş¼àÌı")]
+    [Header("äº‹ä»¶ç›‘å¬")]
     public VoidEventSO afterSceneLoadedEvent;
     public VoidEventSO cameraShakeEvent;
 

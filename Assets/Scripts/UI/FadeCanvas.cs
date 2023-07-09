@@ -6,7 +6,7 @@ using DG.Tweening;
 
 public class FadeCanvas : MonoBehaviour
 {
-    [Header("ÊÂ¼ş¼àÌı")]
+    [Header("äº‹ä»¶ç›‘å¬")]
     public FadeEventSO fadeEvent;
 
     public Image fadeImage;

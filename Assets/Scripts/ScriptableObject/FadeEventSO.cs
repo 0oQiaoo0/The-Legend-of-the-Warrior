@@ -13,7 +13,7 @@ public class FadeEventSO : ScriptableObject
         OnEventRaised?.Invoke(color, duration);
     }
     /// <summary>
-    /// Öğ½¥±äºÚ
+    /// é€æ¸å˜é»‘
     /// </summary>
     /// <param name="duration"></param>
     public void FadeIn(float duration)
@@ -21,7 +21,7 @@ public class FadeEventSO : ScriptableObject
          RaiseEvent(Color.black, duration);
     }
     /// <summary>
-    /// Öğ½¥±äÍ¸Ã÷
+    /// é€æ¸å˜é€æ˜
     /// </summary>
     /// <param name="duration"></param>
     public void FadeOut(float duration)

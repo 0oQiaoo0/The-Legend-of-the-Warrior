@@ -19,9 +19,9 @@ public class PlayerStateBar : MonoBehaviour
     }
 
     /// <summary>
-    /// 接收Health的变更百分比
+    /// 鎺ユ敹Health鐨勫彉鏇寸櫨鍒嗘瘮
     /// </summary>
-    /// <param name="persentage">百分比：Current/Max</param>
+    /// <param name="persentage">鐧惧垎姣旓細Current/Max</param>
     public void OnHealthChange(float persentage)
     {
         //Debug.Log("healthchange");

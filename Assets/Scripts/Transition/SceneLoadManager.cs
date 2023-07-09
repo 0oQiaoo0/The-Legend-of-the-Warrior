@@ -9,30 +9,30 @@ using UnityEngine.SceneManagement;
 
 public class SceneLoadManager : MonoBehaviour
 {
-    public Transform playerTrans;  // Íæ¼ÒµÄTransform×é¼ş
+    public Transform playerTrans;  // ç©å®¶çš„Transformç»„ä»¶
 
-    public Vector3 firstPosition;  // ³õÊ¼Î»ÖÃ
-    public Vector3 menuPosition;  // ²Ëµ¥Î»ÖÃ
-    public float fadeDuration;  // ½¥±ä³ÖĞøÊ±¼ä
-    [Header("³¡¾°")]
-    public GameSceneSO firstLoadScene;  // µÚÒ»¸ö¼ÓÔØµÄ³¡¾°
-    public GameSceneSO menuScene;  // ²Ëµ¥³¡¾°
-    [SerializeField] private GameSceneSO currentLoadScene;  // µ±Ç°¼ÓÔØµÄ³¡¾°
+    public Vector3 firstPosition;  // åˆå§‹ä½ç½®
+    public Vector3 menuPosition;  // èœå•ä½ç½®
+    public float fadeDuration;  // æ¸å˜æŒç»­æ—¶é—´
+    [Header("åœºæ™¯")]
+    public GameSceneSO firstLoadScene;  // ç¬¬ä¸€ä¸ªåŠ è½½çš„åœºæ™¯
+    public GameSceneSO menuScene;  // èœå•åœºæ™¯
+    [SerializeField] private GameSceneSO currentLoadScene;  // å½“å‰åŠ è½½çš„åœºæ™¯
 
-    [Header("ÊÂ¼ş¼àÌı")]
+    [Header("äº‹ä»¶ç›‘å¬")]
     public VoidEventSO newGameEvent;
 
-    [Header("¹ã²¥")]
-    public SceneLoadEventSO loadEventSO;  // ¼ÓÔØ¿ªÊ¼ÊÂ¼ş
-    public SceneLoadEventSO unloadEventSO; // Ğ¶ÔØ¿ªÊ¼ÊÂ¼ş
-    public VoidEventSO afterSceneLoadedEvent;  // Ğ¶ÔØ½áÊøÊÂ¼ş
-    public FadeEventSO fadeEvent;  // ½¥±äĞ§¹ûÊÂ¼ş
+    [Header("å¹¿æ’­")]
+    public SceneLoadEventSO loadEventSO;  // åŠ è½½å¼€å§‹äº‹ä»¶
+    public SceneLoadEventSO unloadEventSO; // å¸è½½å¼€å§‹äº‹ä»¶
+    public VoidEventSO afterSceneLoadedEvent;  // å¸è½½ç»“æŸäº‹ä»¶
+    public FadeEventSO fadeEvent;  // æ¸å˜æ•ˆæœäº‹ä»¶
 
-    private bool isLoading;  // ÊÇ·ñÕıÔÚ¼ÓÔØ³¡¾°
+    private bool isLoading;  // æ˜¯å¦æ­£åœ¨åŠ è½½åœºæ™¯
    
-    private GameSceneSO sceneToLoad;  // Òª¼ÓÔØµÄ³¡¾°
-    private Vector3 posToGo;  // ¼ÓÔØºóÍæ¼ÒÒªÒÆ¶¯µ½µÄÎ»ÖÃ
-    private bool fadeScreen;  // ÊÇ·ñĞèÒªµ­Èëµ­³ö¹ı¶ÉĞ§¹û
+    private GameSceneSO sceneToLoad;  // è¦åŠ è½½çš„åœºæ™¯
+    private Vector3 posToGo;  // åŠ è½½åç©å®¶è¦ç§»åŠ¨åˆ°çš„ä½ç½®
+    private bool fadeScreen;  // æ˜¯å¦éœ€è¦æ·¡å…¥æ·¡å‡ºè¿‡æ¸¡æ•ˆæœ
 
     private void Awake()
     {
@@ -42,18 +42,18 @@ public class SceneLoadManager : MonoBehaviour
     }
     private void OnEnable()
     {
-        loadEventSO.LoadRequestEvent += OnLoadRequestEvent;  // ¶©ÔÄ³¡¾°¼ÓÔØÇëÇóÊÂ¼ş
+        loadEventSO.LoadRequestEvent += OnLoadRequestEvent;  // è®¢é˜…åœºæ™¯åŠ è½½è¯·æ±‚äº‹ä»¶
         newGameEvent.OnEventRaised += NewGame;
     }
     private void OnDisable()
     {
-        loadEventSO.LoadRequestEvent -= OnLoadRequestEvent;  // È¡Ïû¶©ÔÄ³¡¾°¼ÓÔØÇëÇóÊÂ¼ş
+        loadEventSO.LoadRequestEvent -= OnLoadRequestEvent;  // å–æ¶ˆè®¢é˜…åœºæ™¯åŠ è½½è¯·æ±‚äº‹ä»¶
         newGameEvent.OnEventRaised -= NewGame;
     }
     private void Start()
     {
         // NewGame();
-        loadEventSO.RaiseEvent(menuScene, menuPosition, true);  // ´¥·¢³¡¾°¼ÓÔØÇëÇóÊÂ¼ş
+        loadEventSO.RaiseEvent(menuScene, menuPosition, true);  // è§¦å‘åœºæ™¯åŠ è½½è¯·æ±‚äº‹ä»¶
     }
 
     
@@ -62,15 +62,15 @@ public class SceneLoadManager : MonoBehaviour
         sceneToLoad = firstLoadScene;
         posToGo = firstPosition;
         //OnLoadRequestEvent(firstLoadScene, firstPosition, true);
-        loadEventSO.RaiseEvent(sceneToLoad, posToGo, true);  // ´¥·¢³¡¾°¼ÓÔØÇëÇóÊÂ¼ş
+        loadEventSO.RaiseEvent(sceneToLoad, posToGo, true);  // è§¦å‘åœºæ™¯åŠ è½½è¯·æ±‚äº‹ä»¶
     }
 
     /// <summary>
-    /// ¼ÓÔØ³¡¾°
+    /// åŠ è½½åœºæ™¯
     /// </summary>
-    /// <param name="sceneToLoad">Òª¼ÓÔØµÄ³¡¾°</param>
-    /// <param name="posToGo">¼ÓÔØºóÍæ¼ÒÒªÒÆ¶¯µ½µÄÎ»ÖÃ</param>
-    /// <param name="fadeScreen">ÊÇ·ñĞèÒªµ­Èëµ­³ö¹ı¶ÉĞ§¹û</param>
+    /// <param name="sceneToLoad">è¦åŠ è½½çš„åœºæ™¯</param>
+    /// <param name="posToGo">åŠ è½½åç©å®¶è¦ç§»åŠ¨åˆ°çš„ä½ç½®</param>
+    /// <param name="fadeScreen">æ˜¯å¦éœ€è¦æ·¡å…¥æ·¡å‡ºè¿‡æ¸¡æ•ˆæœ</param>
     private void OnLoadRequestEvent(GameSceneSO sceneToLoad, Vector3 posToGo, bool fadeScreen)
     {
         if (isLoading)
@@ -98,17 +98,17 @@ public class SceneLoadManager : MonoBehaviour
     {
         if (fadeScreen)
         {
-            //½¥Èë
+            //æ¸å…¥
             fadeEvent.FadeIn(fadeDuration);
         }
-
+        
         yield return new WaitForSeconds(fadeDuration);
 
         unloadEventSO.RaiseEvent(sceneToLoad, posToGo, fadeScreen);
 
-        yield return currentLoadScene.sceneReference.UnLoadScene();  // Ğ¶ÔØµ±Ç°¼ÓÔØµÄ³¡¾°
+        yield return currentLoadScene.sceneReference.UnLoadScene();  // å¸è½½å½“å‰åŠ è½½çš„åœºæ™¯
 
-        //Òş²Ø½ÇÉ«
+        //éšè—è§’è‰²
         playerTrans.gameObject.SetActive(false);
 
         LoadNewScene();
@@ -116,28 +116,28 @@ public class SceneLoadManager : MonoBehaviour
 
     private void LoadNewScene()
     {
-        var loadingOption = sceneToLoad.sceneReference.LoadSceneAsync(LoadSceneMode.Additive, true);  // ¼ÓÔØĞÂ³¡¾°
+        var loadingOption = sceneToLoad.sceneReference.LoadSceneAsync(LoadSceneMode.Additive, true);  // åŠ è½½æ–°åœºæ™¯
         loadingOption.Completed += OnLoadCompleted;
     }
 
     private void OnLoadCompleted(AsyncOperationHandle<SceneInstance> handle)
     {
-        currentLoadScene = sceneToLoad;  // ÉèÖÃµ±Ç°¼ÓÔØµÄ³¡¾°ÎªĞÂ¼ÓÔØµÄ³¡¾°
+        currentLoadScene = sceneToLoad;  // è®¾ç½®å½“å‰åŠ è½½çš„åœºæ™¯ä¸ºæ–°åŠ è½½çš„åœºæ™¯
 
-        playerTrans.transform.position = posToGo;  // ÉèÖÃÍæ¼ÒµÄÎ»ÖÃÎªÄ¿±êÎ»ÖÃ
+        playerTrans.transform.position = posToGo;  // è®¾ç½®ç©å®¶çš„ä½ç½®ä¸ºç›®æ ‡ä½ç½®
 
-        playerTrans.gameObject.SetActive(true);  // ¼¤»îÍæ¼ÒÓÎÏ·¶ÔÏó
+        playerTrans.gameObject.SetActive(true);  // æ¿€æ´»ç©å®¶æ¸¸æˆå¯¹è±¡
 
         if (fadeScreen)
         {
-            //µ­³ö
+            //æ·¡å‡º
             fadeEvent.FadeOut(fadeDuration);
         }
 
         isLoading = false;
 
-        //Èô¼ÓÔØ³¡¾°²»Îª²Ëµ¥
+        //è‹¥åŠ è½½åœºæ™¯ä¸ä¸ºèœå•
         if (currentLoadScene.sceneType != SceneType.Menu)
-            afterSceneLoadedEvent?.RaiseEvent();  // ´¥·¢³¡¾°¼ÓÔØºó¹ã²¥ÊÂ¼ş
+            afterSceneLoadedEvent?.RaiseEvent();  // è§¦å‘åœºæ™¯åŠ è½½åå¹¿æ’­äº‹ä»¶
     }
 }

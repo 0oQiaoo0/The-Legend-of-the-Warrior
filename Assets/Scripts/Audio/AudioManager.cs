@@ -5,11 +5,11 @@ using UnityEngine;
 using UnityEngine.Audio;
 public class AudioManager : MonoBehaviour
 {
-    [Header("事件监听")]
+    [Header("浜嬩欢鐩戝惉")]
     public PlayAudioEventSO FXEvent;
     public PlayAudioEventSO BGMEvent;
     public VoidEventSO afterSceneLoadedEvent;
-    [Header("组件")]
+    [Header("缁勪欢")]
     public AudioSource BGMSource;
     public AudioSource FXSource;
 

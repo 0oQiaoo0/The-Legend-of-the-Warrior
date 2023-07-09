@@ -6,11 +6,11 @@ public class SceneLoadEventSO : ScriptableObject
     public UnityAction<GameSceneSO, Vector3, bool> LoadRequestEvent;
 
     /// <summary>
-    /// ³¡¾°¼ÓÔØÇëÇó
+    /// åœºæ™¯åŠ è½½è¯·æ±‚
     /// </summary>
-    /// <param name="sceneToLoad">Òª¼ÓÔØµÄ³¡¾°</param>
-    /// <param name="posToGo">PlayerµÄÄ¿µÄ×ø±ê</param>
-    /// <param name="fadeScreen">ÊÇ·ñ½¥Èë½¥³ö</param>
+    /// <param name="sceneToLoad">è¦åŠ è½½çš„åœºæ™¯</param>
+    /// <param name="posToGo">Playerçš„ç›®çš„åæ ‡</param>
+    /// <param name="fadeScreen">æ˜¯å¦æ¸å…¥æ¸å‡º</param>
     public void RaiseEvent(GameSceneSO sceneToLoad,Vector3 posToGo,bool fadeScreen)
     {
         LoadRequestEvent?.Invoke(sceneToLoad, posToGo, fadeScreen);

@@ -10,13 +10,13 @@ public class Bee : Enemy
     private BeeState currentState;
     private BeeState patrolState;
     private BeeState chaseState;
-    [Header("�ƶ���Χ")]
+    [Header("移动范围")]
     [SerializeField] private Vector3 spawnPoint;
     [SerializeField] private float partolRadius;
 
     [HideInInspector] public Vector3 target;
     [HideInInspector] public Vector3 moveDir;
-    [Header("״̬")]
+    [Header("状态")]
     public bool canAttack;
     private float attackRateCounter;
 
@@ -29,7 +29,7 @@ public class Bee : Enemy
         spawnPoint = transform.position;
         attackRateCounter = 0;
     }
-    #region ״̬���
+    #region 状态相关
     protected override void OnEnable()
     {
         currentState = patrolState;

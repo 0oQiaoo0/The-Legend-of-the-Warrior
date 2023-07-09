@@ -19,7 +19,7 @@ public class BeeChaseState : BeeState
 
         if ((currentEnemy.target - currentEnemy.transform.position).magnitude <= currentEnemy.attack.attackRange)
         {
-            //¹¥»÷
+            //æ”»å‡»
             currentEnemy.canAttack = true;
             if (!currentEnemy.isHurt && !currentEnemy.isDead)
                 currentEnemy.rb.velocity = Vector2.zero;

@@ -7,15 +7,15 @@ using UnityEngine.Events;
 
 public class Character : MonoBehaviour
 {
-    [Header("ÊÂ¼ş¼àÌı")]
+    [Header("äº‹ä»¶ç›‘å¬")]
     public VoidEventSO newGameEvent;
-    [Header("»ù±¾ÊôĞÔ")]
+    [Header("åŸºæœ¬å±æ€§")]
     public float maxHealth;
     public float currentHealth;
     public float maxPower;
     public float currentPower;
     public float powerRecoverSpeed;
-    [Header("ÊÜÉËÎŞµĞ")]
+    [Header("å—ä¼¤æ— æ•Œ")]
     public float invulnerableDuration;
     [HideInInspector] public float invulnerableCounter;
     public bool invulnerable;
@@ -34,16 +34,16 @@ public class Character : MonoBehaviour
     }
     private void Start()
     {
-        //Íæ¼Ò³õÊ¼×´Ì¬ÖØÖÃ&Éú³É³¡¾°Ê±µĞÈË×´Ì¬ÖØÖÃ
+        //ç©å®¶åˆå§‹çŠ¶æ€é‡ç½®&ç”Ÿæˆåœºæ™¯æ—¶æ•ŒäººçŠ¶æ€é‡ç½®
         currentPower = maxPower;
         currentHealth = maxHealth;
     }
     private void NewGame()
     {
-        //ÖØĞÂ¿ªÊ¼ÓÎÏ·Ê±Íæ¼Ò×´Ì¬ÖØÖÃ
+        //é‡æ–°å¼€å§‹æ¸¸æˆæ—¶ç©å®¶çŠ¶æ€é‡ç½®
         currentPower = maxPower;
         currentHealth = maxHealth;
-        //OnHealthChange?.Invoke(this);//»òĞíĞèÒªÔÙ¸ã¸öÊÂ¼ş
+        //OnHealthChange?.Invoke(this);//æˆ–è®¸éœ€è¦å†æä¸ªäº‹ä»¶
         //OnPowerChange?.Invoke(this);
     }
     private void Update()
@@ -72,7 +72,7 @@ public class Character : MonoBehaviour
         if (collision.CompareTag("Water"))
         {
             Debug.Log("water");
-            //ËÀÍö¡¢¸üĞÂÑªÁ¿
+            //æ­»äº¡ã€æ›´æ–°è¡€é‡
             OnDie?.Invoke();
             currentHealth = 0;
             OnHealthChange?.Invoke(this);
@@ -86,21 +86,21 @@ public class Character : MonoBehaviour
             if (currentHealth <= attacker.damage)
             {
                 currentHealth = 0;
-                //´¥·¢ËÀÍö
+                //è§¦å‘æ­»äº¡
                 OnDie?.Invoke();
             }
             else
             {
                 currentHealth -= attacker.damage;
                 TriggerInvulnerable();
-                //Ö´ĞĞÊÜÉË
+                //æ‰§è¡Œå—ä¼¤
                 OnTakeDamage?.Invoke(attacker.transform);
             }
             OnHealthChange?.Invoke(this);
         }
     }
     /// <summary>
-    /// ´¥·¢ÊÜÉËÎŞµĞ
+    /// è§¦å‘å—ä¼¤æ— æ•Œ
     /// </summary>
     private void TriggerInvulnerable()
     {

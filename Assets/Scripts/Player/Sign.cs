@@ -42,7 +42,7 @@ public class Sign : MonoBehaviour
     }
 
     /// <summary>
-    /// 切换设备同时切换按钮动画
+    /// 鍒囨崲璁惧鍚屾椂鍒囨崲鎸夐挳鍔ㄧ敾
     /// </summary>
     /// <param name="obj"></param>
     /// <param name="actionChange"></param>

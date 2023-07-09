@@ -8,7 +8,7 @@ public class PhysicsCheck : MonoBehaviour
     private BoxCollider2D boxCollider;
     private PlayerController playerController;
     private Rigidbody2D rb;
-    [Header("¼ì²â²ÎÊı")]
+    [Header("æ£€æµ‹å‚æ•°")]
     public bool manual;
     public Vector2 bottomOffset;
     public Vector2 leftBottomOffset;
@@ -17,7 +17,7 @@ public class PhysicsCheck : MonoBehaviour
     public Vector2 rightOffset;
     public float checkRadius;
     public LayerMask groundLayer;
-    [Header("×´Ì¬")]
+    [Header("çŠ¶æ€")]
     public bool isGround;
     public bool leftIsGround;
     public bool rightIsGround;
@@ -60,14 +60,14 @@ public class PhysicsCheck : MonoBehaviour
     }
     public void Check()
     {
-        //¼ì²âµØÃæ
+        //æ£€æµ‹åœ°é¢
         //if (boxCollider)
         {
             isGround = Physics2D.OverlapCircle((Vector2)transform.position + bottomOffset, checkRadius, groundLayer);
             leftIsGround = Physics2D.OverlapCircle((Vector2)transform.position + leftBottomOffset, checkRadius, groundLayer);
             rightIsGround = Physics2D.OverlapCircle((Vector2)transform.position + rightBottomOffset, checkRadius, groundLayer);
         }
-        //Ç½ÌåÅĞ¶Ï
+        //å¢™ä½“åˆ¤æ–­
         //if (capsuleCollider)
         {
             touchLeftWall = Physics2D.OverlapCircle((Vector2)transform.position + leftOffset, checkRadius, groundLayer);
@@ -84,16 +84,16 @@ public class PhysicsCheck : MonoBehaviour
         float tmp;
         //if (boxCollider)
         {
-            //bottomOffset·­×ª
+            //bottomOffsetç¿»è½¬
             bottomOffset.x = -bottomOffset.x;
-            //leftBottomOffset & rightBottomOffset·­×ª
+            //leftBottomOffset & rightBottomOffsetç¿»è½¬
             tmp = leftBottomOffset.x;
             leftBottomOffset.x = -rightBottomOffset.x;
             rightBottomOffset.x = -tmp;
         }
         //if (capsuleCollider)
         {
-            //leftOffset & rightOffset·­×ª
+            //leftOffset & rightOffsetç¿»è½¬
             tmp = leftOffset.x;
             leftOffset.x = -rightOffset.x;
             rightOffset.x = -tmp;

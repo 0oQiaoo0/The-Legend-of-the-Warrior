@@ -7,7 +7,7 @@ public class UIManager : MonoBehaviour
 {
     public PlayerStateBar playerStateBar;
 
-    [Header("ÊÂ¼ş¼àÌı")]
+    [Header("äº‹ä»¶ç›‘å¬")]
     public CharacterEventSO healthEvent;
     public CharacterEventSO powerEvent;
     public SceneLoadEventSO unloadEvent;

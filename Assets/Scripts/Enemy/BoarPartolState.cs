@@ -12,7 +12,7 @@ public class BoarPartolState : BoarState
     }
     public override void LogicUpdate()
     {
-        //·¢ÏÖplayerÇĞ»»µ½chase
+        //å‘ç°playeråˆ‡æ¢åˆ°chase
         if (currentEnemy.FoundPlayer())
         {
             currentEnemy.SwitchState(NPCState.Chase);

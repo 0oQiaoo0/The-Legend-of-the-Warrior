@@ -15,7 +15,7 @@ public class Snail : GroundEnemy
         skillState = new SnailSkillState();
     }
     
-    #region ״̬���
+    #region 状态相关
     protected override void OnEnable()
     {
         currentState = patrolState;

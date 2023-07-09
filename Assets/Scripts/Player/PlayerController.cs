@@ -20,10 +20,10 @@ public class PlayerController : MonoBehaviour
     public UIManager uiManager;
     public Vector2 inputDirection;
     public AudioDefination jumpAudioDefination;
-    [Header("¼àÌıÊÂ¼ş")]
+    [Header("ç›‘å¬äº‹ä»¶")]
     public SceneLoadEventSO loadEvent;
     public VoidEventSO afterSceneLoadedEvent;
-    [Header("»ù±¾²ÎÊı")]
+    [Header("åŸºæœ¬å‚æ•°")]
     public float speed;
     private float runSpeed;
     private float walkSpeed;
@@ -46,11 +46,11 @@ public class PlayerController : MonoBehaviour
     public float lastDirTime;
     private float lastLeftTimeCounter;
     private float lastRightTimeCounter;
-    [Header("ÎïÀí²ÄÖÊ")]
+    [Header("ç‰©ç†æè´¨")]
     public PhysicsMaterial2D normal;
     public PhysicsMaterial2D wall;
     public PhysicsMaterial2D OnWall;
-    [Header("×´Ì¬")]
+    [Header("çŠ¶æ€")]
     public bool isCrouch;
     public bool isHurt;
     public bool isDead;
@@ -75,7 +75,7 @@ public class PlayerController : MonoBehaviour
         inputControl.Gameplay.CrouchButton.started += CrouchorSlideStart;
         inputControl.Gameplay.CrouchButton.canceled += CrouchEnd;
 
-        #region Ç¿ÖÆ×ßÂ·
+        #region å¼ºåˆ¶èµ°è·¯
         runSpeed = speed;
         walkSpeed = speed / 2.5f;
         
@@ -95,7 +95,7 @@ public class PlayerController : MonoBehaviour
         };
         #endregion
 
-        //¹¥»÷
+        //æ”»å‡»
         inputControl.Gameplay.Attack.started += PlayerAttack;
     }
 
@@ -146,7 +146,7 @@ public class PlayerController : MonoBehaviour
             faceDir = 1;
         if (inputDirection.x < 0) 
             faceDir = -1;
-        //ÈËÎï·­×ª
+        //äººç‰©ç¿»è½¬
         if(faceDir != (int)transform.localScale.x)
             ChangeDirection();
     }
