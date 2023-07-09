@@ -10,17 +10,26 @@ public class UIManager : MonoBehaviour
     [Header("ÊÂ¼þ¼àÌý")]
     public CharacterEventSO healthEvent;
     public CharacterEventSO powerEvent;
+    public SceneLoadEventSO unloadEvent;
 
     private void OnEnable()
     {
         healthEvent.OnEventRaised += OnHealthEvent;
         powerEvent.OnEventRaised += OnPowerEvent;
+        unloadEvent.LoadRequestEvent += OnUnloadEvent;
     }
 
     private void OnDisable()
     {
         healthEvent.OnEventRaised -= OnHealthEvent;
         powerEvent.OnEventRaised -= OnPowerEvent;
+        unloadEvent.LoadRequestEvent -= OnUnloadEvent;
+    }
+
+    private void OnUnloadEvent(GameSceneSO sceneToLoad, Vector3 arg1, bool arg2)
+    {
+        var isMenu = sceneToLoad.sceneType == SceneType.Menu;
+        playerStateBar.gameObject.SetActive(!isMenu);
     }
 
     private void OnHealthEvent(Character character)

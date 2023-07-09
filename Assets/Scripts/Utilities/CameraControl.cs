@@ -6,34 +6,40 @@ using System;
 
 public class CameraControl : MonoBehaviour
 {
+    [Header("事件监听")]
+    public VoidEventSO afterSceneLoadedEvent;
+    public VoidEventSO cameraShakeEvent;
+
     private CinemachineConfiner2D confiner2D;
     public CinemachineImpulseSource impulseSource;
-    public VoidEventSO cameraShakeEvent;
+    
 
     private void Awake()
     {
         confiner2D = GetComponent<CinemachineConfiner2D>();
+        
     }
 
     private void OnEnable()
     {
         cameraShakeEvent.OnEventRaised += OnCameraShakeEvent;
+        afterSceneLoadedEvent.OnEventRaised += OnAfterSceneLoadedEvent;
     }
 
     private void OnDisable()
     {
         cameraShakeEvent.OnEventRaised -= OnCameraShakeEvent;
+        afterSceneLoadedEvent.OnEventRaised -= OnAfterSceneLoadedEvent;
+    }
+
+    private void OnAfterSceneLoadedEvent()
+    {
+        GetNewCameraBounds();
     }
 
     private void OnCameraShakeEvent()
     {
         impulseSource.GenerateImpulse();
-    }
-
-    private void Start()
-    {
-        //TODO:场景切换后更改
-        GetNewCameraBounds();
     }
 
     private void GetNewCameraBounds()

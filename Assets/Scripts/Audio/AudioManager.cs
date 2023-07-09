@@ -8,6 +8,7 @@ public class AudioManager : MonoBehaviour
     [Header("事件监听")]
     public PlayAudioEventSO FXEvent;
     public PlayAudioEventSO BGMEvent;
+    public VoidEventSO afterSceneLoadedEvent;
     [Header("组件")]
     public AudioSource BGMSource;
     public AudioSource FXSource;
@@ -16,12 +17,14 @@ public class AudioManager : MonoBehaviour
     {
         FXEvent.OnEventRaised += OnFXEvent;
         BGMEvent.OnEventRaised += OnBGMEvent;
+        afterSceneLoadedEvent.OnEventRaised += OnAfterSceneLoadedEvent;
     }
 
     private void OnDisable()
     {
         FXEvent.OnEventRaised -= OnFXEvent;
         BGMEvent.OnEventRaised -= OnBGMEvent;
+        afterSceneLoadedEvent.OnEventRaised -= OnAfterSceneLoadedEvent;
     }
 
     private void OnBGMEvent(AudioClip clip)
@@ -34,5 +37,17 @@ public class AudioManager : MonoBehaviour
     {
         FXSource.clip = clip;
         FXSource.Play();
+    }
+
+    private void OnAfterSceneLoadedEvent()
+    {
+        playNewBGM();
+    }
+    private void playNewBGM()
+    {
+        var obj = GameObject.FindWithTag("BGM");
+        if (!obj) return;
+
+        OnBGMEvent(obj.GetComponent<AudioDefination>().audioClip);
     }
 }

@@ -19,7 +19,10 @@ public class PlayerController : MonoBehaviour
     private Character character;
     public UIManager uiManager;
     public Vector2 inputDirection;
-    
+    public AudioDefination jumpAudioDefination;
+    [Header("监听事件")]
+    public SceneLoadEventSO loadEvent;
+    public VoidEventSO afterSceneLoadedEvent;
     [Header("基本参数")]
     public float speed;
     private float runSpeed;
@@ -27,6 +30,9 @@ public class PlayerController : MonoBehaviour
     public float jumpForce;
     public float wallJumpForce;
     public float wallJumpTime;
+    public Vector2 leftWallForceAngle;
+    public Vector2 rightWallForceAngle;
+    public float wallJumpPowerCost;
     public float hurtForce;
 
     public float slideDistance;
@@ -65,7 +71,7 @@ public class PlayerController : MonoBehaviour
         originalOffset = capsuleCollider.offset;
         originalSize = capsuleCollider.size;
 
-        inputControl.Gameplay.Jump.started += Jump;
+        inputControl.Gameplay.Jump.started += JumporWallJump;
         inputControl.Gameplay.CrouchButton.started += CrouchorSlideStart;
         inputControl.Gameplay.CrouchButton.canceled += CrouchEnd;
 
@@ -98,10 +104,24 @@ public class PlayerController : MonoBehaviour
     private void OnEnable()
     {
         inputControl.Enable();
+        loadEvent.LoadRequestEvent += OnLoadEvent;
+        afterSceneLoadedEvent.OnEventRaised += OnAfterSceneLoadedEvent;
     }
+
     private void OnDisable()
     {
         inputControl.Disable();
+        loadEvent.LoadRequestEvent -= OnLoadEvent;
+        afterSceneLoadedEvent.OnEventRaised -= OnAfterSceneLoadedEvent;
+    }
+
+    private void OnLoadEvent(GameSceneSO arg0, Vector3 arg1, bool arg2)
+    {
+        inputControl.Gameplay.Disable();
+    }
+    private void OnAfterSceneLoadedEvent()
+    {
+        inputControl.Gameplay.Enable();
     }
 
     private void Update()
@@ -139,7 +159,7 @@ public class PlayerController : MonoBehaviour
     }
 
     #region UnityEvent
-    private void Jump(InputAction.CallbackContext obj)
+    private void JumporWallJump(InputAction.CallbackContext obj)
     {
         if (IsGround())
         {
@@ -148,20 +168,40 @@ public class PlayerController : MonoBehaviour
                 SlideEnd();
                 StopCoroutine(slideCouroutine);
             }
-            
-            rb.AddForce(transform.up * jumpForce, ForceMode2D.Impulse);
+            Jump();
         }
         if (physicsCheck.onWall && rb.velocity.y < 0.01f)
         {
-            Vector2 forceAngle = new();//can add a change
-            if (physicsCheck.touchLeftWall && lastLeftTimeCounter > 0) forceAngle = new Vector2(1f, 2f);
-            if (physicsCheck.touchRightWall && lastRightTimeCounter > 0) forceAngle = new Vector2(-1f, 2f);
-
-            rb.velocity = Vector2.zero;
-            rb.AddForce(forceAngle * wallJumpForce, ForceMode2D.Impulse);
-            isWallJump = true;
-
+            if (character.currentPower >= wallJumpPowerCost)
+            {
+                WallJump();
+            }
+            else
+            {
+                uiManager.PowerLack();
+            }
+                
         }
+    }
+    private void Jump()
+    {
+        jumpAudioDefination.PlayAudioClip();
+
+        rb.AddForce(transform.up * jumpForce, ForceMode2D.Impulse);
+    }
+
+    private void WallJump()
+    {
+        Vector2 forceAngle = Vector2.zero;
+        if (physicsCheck.touchLeftWall && lastLeftTimeCounter > 0) forceAngle = leftWallForceAngle.normalized;
+        if (physicsCheck.touchRightWall && lastRightTimeCounter > 0) forceAngle = rightWallForceAngle.normalized;
+
+        jumpAudioDefination.PlayAudioClip();
+
+        rb.velocity = Vector2.zero;
+        rb.AddForce(forceAngle * wallJumpForce, ForceMode2D.Impulse);
+        isWallJump = true;
+        character.PowerSpend(wallJumpPowerCost);
     }
     private void CrouchorSlideStart(InputAction.CallbackContext obj)
     {
@@ -200,9 +240,10 @@ public class PlayerController : MonoBehaviour
     }
     private IEnumerator TriggerSlide(Vector3 target)
     {
-        rb.MovePosition(target);
-        while (MathF.Abs(target.x - transform.position.x) > 0.1f)
+        //rb.MovePosition(target);
+        while (MathF.Abs(target.x - transform.position.x) > 0.2f)
         {
+            //Debug.Log(MathF.Abs(target.x - transform.position.x));
             if (!FrontIsGround() || TouchFrontWall()) 
             {
                 SlideEnd();
@@ -213,6 +254,7 @@ public class PlayerController : MonoBehaviour
 
             yield return null;
         }
+        //Debug.Log("slide end");
         SlideEnd();
     }
     private bool TouchFrontWall()

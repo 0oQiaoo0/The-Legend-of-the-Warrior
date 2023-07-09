@@ -1,11 +1,14 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.Events;
 
 public class Character : MonoBehaviour
 {
+    [Header("事件监听")]
+    public VoidEventSO newGameEvent;
     [Header("基本属性")]
     public float maxHealth;
     public float currentHealth;
@@ -21,12 +24,27 @@ public class Character : MonoBehaviour
     public UnityEvent<Character> OnPowerChange;
     public UnityEvent<Transform> OnTakeDamage;
     public UnityEvent OnDie;
+    private void OnEnable()
+    {
+        newGameEvent.OnEventRaised += NewGame;
+    }
+    private void OnDisable()
+    {
+        newGameEvent.OnEventRaised -= NewGame;
+    }
     private void Start()
     {
+        //玩家初始状态重置&生成场景时敌人状态重置
         currentPower = maxPower;
         currentHealth = maxHealth;
-        OnHealthChange?.Invoke(this);
-        OnPowerChange?.Invoke(this);
+    }
+    private void NewGame()
+    {
+        //重新开始游戏时玩家状态重置
+        currentPower = maxPower;
+        currentHealth = maxHealth;
+        //OnHealthChange?.Invoke(this);//或许需要再搞个事件
+        //OnPowerChange?.Invoke(this);
     }
     private void Update()
     {
@@ -57,7 +75,7 @@ public class Character : MonoBehaviour
             //死亡、更新血量
             OnDie?.Invoke();
             currentHealth = 0;
-            OnHealthChange.Invoke(this);
+            OnHealthChange?.Invoke(this);
         }
     }
 
