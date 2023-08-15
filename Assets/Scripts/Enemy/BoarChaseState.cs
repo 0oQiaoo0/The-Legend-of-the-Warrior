@@ -1,37 +1,36 @@
-using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
-
-public class BoarChaseState : BoarState
+namespace Enemy
 {
-    public override void OnEnter(Boar enemy)
+    public class BoarChaseState : BoarState
     {
-       currentEnemy = enemy;
-        //Debug.Log("boar chase enter");
-        currentEnemy.currentSpeed = currentEnemy.chaseSpeed;
-        currentEnemy.animator.SetBool("isRun", true);
-
-        if (currentEnemy.isWait)
+        public override void OnEnter(Boar enemy)
         {
-            currentEnemy.isWait = false;
-            currentEnemy.waitTimeCounter = currentEnemy.waitTime;
-        }
-    }
-    public override void LogicUpdate()
-    {
-        if (!currentEnemy.CheckFrontGround() || currentEnemy.CheckFrontWall())
-        {
-            currentEnemy.ChangeDirection(); 
-        }
-    }
+            currentEnemy = enemy;
+            //Debug.Log("boar chase enter");
+            currentEnemy.currentSpeed = currentEnemy.chaseSpeed;
+            currentEnemy.animator.SetBool("isRun", true);
 
-    public override void PhysicsUpdate()
-    {
-        if (!currentEnemy.isWait && !currentEnemy.isHurt && !currentEnemy.isDead)
-            currentEnemy.Move();
-    }
-    public override void OnExit()
-    {
-        currentEnemy.animator.SetBool("isRun", false);
+            if (currentEnemy.isWait)
+            {
+                currentEnemy.isWait = false;
+                currentEnemy.waitTimeCounter = currentEnemy.waitTime;
+            }
+        }
+        public override void LogicUpdate()
+        {
+            if (!currentEnemy.CheckFrontGround() || currentEnemy.CheckFrontWall())
+            {
+                currentEnemy.ChangeDirection(); 
+            }
+        }
+
+        public override void PhysicsUpdate()
+        {
+            if (!currentEnemy.isWait && !currentEnemy.isHurt && !currentEnemy.isDead)
+                currentEnemy.Move();
+        }
+        public override void OnExit()
+        {
+            currentEnemy.animator.SetBool("isRun", false);
+        }
     }
 }

@@ -1,224 +1,226 @@
 using System;
 using System.Collections;
-using System.Collections.Generic;
-using System.Diagnostics.Eventing.Reader;
-using System.Xml.Serialization;
-using UnityEditor.Build;
+using Audio;
+using General;
+using SO;
+using UI;
 using UnityEngine;
 using UnityEngine.InputSystem;
-using UnityEngine.InputSystem.Layouts;
+using UnityEngine.Serialization;
 
-public class PlayerController : MonoBehaviour
+namespace Player
 {
-    private PhysicsCheck physicsCheck;
-    public PlayerInoutControl inputControl;
-    private Rigidbody2D rb;
-    private CapsuleCollider2D capsuleCollider;
-    private BoxCollider2D boxCollider;
-    private PlayerAnimation playerAnimation;
-    private Character character;
-    public UIManager uiManager;
-    public Vector2 inputDirection;
-    public AudioDefination jumpAudioDefination;
-    [Header("监听事件")]
-    public SceneLoadEventSO loadEvent;
-    public VoidEventSO afterSceneLoadedEvent;
-    [Header("基本参数")]
-    public float speed;
-    private float runSpeed;
-    private float walkSpeed;
-    public float jumpForce;
-    public float wallJumpForce;
-    public float wallJumpTime;
-    public Vector2 leftWallForceAngle;
-    public Vector2 rightWallForceAngle;
-    public float wallJumpPowerCost;
-    public float hurtForce;
-
-    public float slideDistance;
-    public float slideFrameSpeed;
-    public float slidePowerCost;
-    private Coroutine slideCouroutine;
-
-    private Vector2 originalOffset;
-    private Vector2 originalSize;
-
-    public float lastDirTime;
-    private float lastLeftTimeCounter;
-    private float lastRightTimeCounter;
-    [Header("物理材质")]
-    public PhysicsMaterial2D normal;
-    public PhysicsMaterial2D wall;
-    public PhysicsMaterial2D OnWall;
-    [Header("状态")]
-    public bool isCrouch;
-    public bool isHurt;
-    public bool isDead;
-    public bool isAttack;
-    public bool isWallJump;
-    public bool isSlide;
-
-
-    private void Awake()
+    public class PlayerController : MonoBehaviour
     {
-        character = GetComponent<Character>();
-        rb = GetComponent<Rigidbody2D>();
-        inputControl = new PlayerInoutControl();
-        physicsCheck = GetComponent<PhysicsCheck>();
-        capsuleCollider = GetComponent<CapsuleCollider2D>();
-        boxCollider = GetComponent<BoxCollider2D>();
-        playerAnimation = GetComponent<PlayerAnimation>();
-        originalOffset = capsuleCollider.offset;
-        originalSize = capsuleCollider.size;
+        private PhysicsCheck _physicsCheck;
+        private PlayerInoutControl _inputControl;
+        private Rigidbody2D _rigidbody;
+        private CapsuleCollider2D _capsuleCollider;
+        private BoxCollider2D _boxCollider;
+        private PlayerAnimation _playerAnimation;
+        private Character _character;
+        public UIManager uiManager;
+        public Vector2 inputDirection;
+        [FormerlySerializedAs("jumpAudioDefination")] public AudioDefinition jumpAudioDefinition;
+        [Header("监听事件")]
+        public SceneLoadEventSO loadEvent;
+        public VoidEventSO afterSceneLoadedEvent;
+        [Header("基本参数")]
+        public float speed;
+        public float runSpeed = 290;
+        public float walkSpeed = 116;
+        public float jumpForce;
+        public float wallJumpForce;
+        public float wallJumpTime;
+        public Vector2 leftWallForceAngle;
+        public Vector2 rightWallForceAngle;
+        public float wallJumpPowerCost;
+        public float hurtForce;
 
-        inputControl.Gameplay.Jump.started += JumporWallJump;
-        inputControl.Gameplay.CrouchButton.started += CrouchorSlideStart;
-        inputControl.Gameplay.CrouchButton.canceled += CrouchEnd;
+        public float slideDistance;
+        public float slideFrameSpeed;
+        public float slidePowerCost;
+        private Coroutine _slideCoroutine;
 
-        #region 强制走路
-        runSpeed = speed;
-        walkSpeed = speed / 2.5f;
+        private Vector2 _originalOffset;
+        private Vector2 _originalSize;
+
+        public float lastDirTime;
+        private float _lastLeftTimeCounter;
+        private float _lastRightTimeCounter;
+        [Header("物理材质")]
+        public PhysicsMaterial2D normal;
+        public PhysicsMaterial2D wall;
+        [FormerlySerializedAs("OnWall")] public PhysicsMaterial2D onWall;
+        [Header("状态")]
+        public bool isCrouch;
+        public bool isHurt;
+        public bool isDead;
+        public bool isAttack;
+        public bool isWallJump;
+        public bool isSlide;
+
+
+        private void Awake()
+        {
+            _character = GetComponent<Character>();
+            _rigidbody = GetComponent<Rigidbody2D>();
+            _inputControl = new PlayerInoutControl();
+            _physicsCheck = GetComponent<PhysicsCheck>();
+            _capsuleCollider = GetComponent<CapsuleCollider2D>();
+            _boxCollider = GetComponent<BoxCollider2D>();
+            _playerAnimation = GetComponent<PlayerAnimation>();
+            _originalOffset = _capsuleCollider.offset;
+            _originalSize = _capsuleCollider.size;
+
+            _inputControl.Gameplay.Jump.started += JumporWallJump;
+            _inputControl.Gameplay.CrouchButton.started += CrouchSlideStart;
+            _inputControl.Gameplay.CrouchButton.canceled += CrouchEnd;
+
+            #region 强制走路
+            // runSpeed = speed;
+            // walkSpeed = speed / 2.5f;
         
-        inputControl.Gameplay.WalkButton.performed += ctx =>
-        {
-            if (IsGround())
+            _inputControl.Gameplay.WalkButton.performed += ctx =>
             {
-                speed = walkSpeed;
-            }
-        };
-        inputControl.Gameplay.WalkButton.canceled += ctx =>
-        {
-            if (IsGround())
+                if (IsGround())
+                {
+                    speed = walkSpeed;
+                }
+            };
+            _inputControl.Gameplay.WalkButton.canceled += ctx =>
             {
-                speed = runSpeed;
-            }
-        };
-        #endregion
+                if (IsGround())
+                {
+                    speed = runSpeed;
+                }
+            };
+            #endregion
 
-        //攻击
-        inputControl.Gameplay.Attack.started += PlayerAttack;
-    }
+            //攻击
+            _inputControl.Gameplay.Attack.started += PlayerAttack;
+        }
 
     
 
-    private void OnEnable()
-    {
-        inputControl.Enable();
-        loadEvent.LoadRequestEvent += OnLoadEvent;
-        afterSceneLoadedEvent.OnEventRaised += OnAfterSceneLoadedEvent;
-    }
-
-    private void OnDisable()
-    {
-        inputControl.Disable();
-        loadEvent.LoadRequestEvent -= OnLoadEvent;
-        afterSceneLoadedEvent.OnEventRaised -= OnAfterSceneLoadedEvent;
-    }
-
-    private void OnLoadEvent(GameSceneSO arg0, Vector3 arg1, bool arg2)
-    {
-        inputControl.Gameplay.Disable();
-    }
-    private void OnAfterSceneLoadedEvent()
-    {
-        inputControl.Gameplay.Enable();
-    }
-
-    private void Update()
-    {
-        inputDirection = inputControl.Gameplay.Move.ReadValue<Vector2>();
-        CheckState();
-    }
-
-    private void FixedUpdate()
-    {
-        if (!isHurt&&!isAttack&&!isCrouch&&!isWallJump&&!isSlide)
-            Move();
-    }
-
-    public void Move()
-    {
-        rb.velocity = new Vector2(inputDirection.x * speed * Time.deltaTime, rb.velocity.y);
-
-        int faceDir = (int)transform.localScale.x;
-
-        if (inputDirection.x > 0)
-            faceDir = 1;
-        if (inputDirection.x < 0) 
-            faceDir = -1;
-        //人物翻转
-        if(faceDir != (int)transform.localScale.x)
-            ChangeDirection();
-    }
-
-    public void ChangeDirection()
-    {
-        //change scale
-        transform.localScale = new Vector3(-transform.localScale.x, transform.localScale.y, transform.localScale.z);
-        physicsCheck.ChangeDirection();
-    }
-
-    #region UnityEvent
-    private void JumporWallJump(InputAction.CallbackContext obj)
-    {
-        if (IsGround())
+        private void OnEnable()
         {
-            if (isSlide)
-            {
-                SlideEnd();
-                StopCoroutine(slideCouroutine);
-            }
-            Jump();
+            _inputControl.Enable();
+            loadEvent.LoadRequestEvent += OnLoadEvent;
+            afterSceneLoadedEvent.OnEventRaised += OnAfterSceneLoadedEvent;
         }
-        if (physicsCheck.onWall && rb.velocity.y < 0.01f)
+
+        private void OnDisable()
         {
-            if (character.currentPower >= wallJumpPowerCost)
-            {
-                WallJump();
-            }
-            else
-            {
-                uiManager.PowerLack();
-            }
-                
+            _inputControl.Disable();
+            loadEvent.LoadRequestEvent -= OnLoadEvent;
+            afterSceneLoadedEvent.OnEventRaised -= OnAfterSceneLoadedEvent;
         }
-    }
-    private void Jump()
-    {
-        jumpAudioDefination.PlayAudioClip();
 
-        rb.AddForce(transform.up * jumpForce, ForceMode2D.Impulse);
-    }
-
-    private void WallJump()
-    {
-        Vector2 forceAngle = Vector2.zero;
-        if (physicsCheck.touchLeftWall && lastLeftTimeCounter > 0) forceAngle = leftWallForceAngle.normalized;
-        if (physicsCheck.touchRightWall && lastRightTimeCounter > 0) forceAngle = rightWallForceAngle.normalized;
-
-        jumpAudioDefination.PlayAudioClip();
-
-        rb.velocity = Vector2.zero;
-        rb.AddForce(forceAngle * wallJumpForce, ForceMode2D.Impulse);
-        isWallJump = true;
-        character.PowerSpend(wallJumpPowerCost);
-    }
-    private void CrouchorSlideStart(InputAction.CallbackContext obj)
-    {
-        if (IsGround())
+        private void OnLoadEvent(GameSceneSO arg0, Vector3 arg1, bool arg2)
         {
-            if (Mathf.Abs(rb.velocity.x) < 0.1f)
+            _inputControl.Gameplay.Disable();
+        }
+        private void OnAfterSceneLoadedEvent()
+        {
+            _inputControl.Gameplay.Enable();
+        }
+
+        private void Update()
+        {
+            inputDirection = _inputControl.Gameplay.Move.ReadValue<Vector2>();
+            CheckState();
+        }
+
+        private void FixedUpdate()
+        {
+            if (!isHurt&&!isAttack&&!isCrouch&&!isWallJump&&!isSlide)
+                Move();
+        }
+
+        private void Move()
+        {
+            _rigidbody.velocity = new Vector2(inputDirection.x * speed * Time.deltaTime, _rigidbody.velocity.y);
+
+            int faceDir = (int)transform.localScale.x;
+
+            if (inputDirection.x > 0)
+                faceDir = 1;
+            if (inputDirection.x < 0) 
+                faceDir = -1;
+            //人物翻转
+            if(faceDir != (int)transform.localScale.x)
+                ChangeDirection();
+        }
+
+        private void ChangeDirection()
+        {
+            //change scale
+            transform.localScale = new Vector3(-transform.localScale.x, transform.localScale.y, transform.localScale.z);
+            _physicsCheck.ChangeDirection();
+        }
+
+        #region UnityEvent
+        private void JumporWallJump(InputAction.CallbackContext obj)
+        {
+            if (IsGround())
             {
-                isCrouch = true;
-                capsuleCollider.offset = new Vector2(-0.05f, 0.85f);
-                capsuleCollider.size = new Vector2(0.7f, 1.7f);
-                physicsCheck.resetOffset();
-            }
-            else
-            {
-                if(!isSlide)
+                if (isSlide)
                 {
-                    if(character.currentPower >= slidePowerCost) 
+                    SlideEnd();
+                    StopCoroutine(_slideCoroutine);
+                }
+                Jump();
+            }
+            if (_physicsCheck.onWall && _rigidbody.velocity.y < 0.01f)
+            {
+                if (_character.currentPower >= wallJumpPowerCost)
+                {
+                    WallJump();
+                }
+                else
+                {
+                    uiManager.PowerLack();
+                }
+                
+            }
+        }
+        private void Jump()
+        {
+            jumpAudioDefinition.PlayAudioClip();
+
+            _rigidbody.AddForce(transform.up * jumpForce, ForceMode2D.Impulse);
+        }
+
+        private void WallJump()
+        {
+            var forceAngle = Vector2.zero;
+            if (_physicsCheck.touchLeftWall && _lastLeftTimeCounter > 0) forceAngle = leftWallForceAngle.normalized;
+            if (_physicsCheck.touchRightWall && _lastRightTimeCounter > 0) forceAngle = rightWallForceAngle.normalized;
+
+            jumpAudioDefinition.PlayAudioClip();
+
+            _rigidbody.velocity = Vector2.zero;
+            _rigidbody.AddForce(forceAngle * wallJumpForce, ForceMode2D.Impulse);
+            isWallJump = true;
+            _character.PowerSpend(wallJumpPowerCost);
+        }
+        private void CrouchSlideStart(InputAction.CallbackContext obj)
+        {
+            if (IsGround())
+            {
+                if (Mathf.Abs(_rigidbody.velocity.x) < 0.1f)
+                {
+                    isCrouch = true;
+                    _capsuleCollider.offset = new Vector2(-0.05f, 0.85f);
+                    _capsuleCollider.size = new Vector2(0.7f, 1.7f);
+                    _physicsCheck.ResetOffset();
+                }
+                else
+                {
+                    if (isSlide) return;
+                    
+                    if(_character.currentPower >= slidePowerCost) 
                     {
                         SlideBegin();
                     }
@@ -229,112 +231,111 @@ public class PlayerController : MonoBehaviour
                 }
             }
         }
-    }
-    private void SlideBegin()
-    {
-        isSlide = true;
-        gameObject.layer = 2;//ignore trigger
-        var targetPos = new Vector3(transform.position.x + slideDistance * transform.localScale.x, transform.position.y);
-        slideCouroutine = StartCoroutine(TriggerSlide(targetPos));
-        character.PowerSpend(slidePowerCost);
-    }
-    private IEnumerator TriggerSlide(Vector3 target)
-    {
-        //rb.MovePosition(target);
-        while (MathF.Abs(target.x - transform.position.x) > 0.2f)
+        private void SlideBegin()
         {
-            //Debug.Log(MathF.Abs(target.x - transform.position.x));
-            if (!FrontIsGround() || TouchFrontWall()) 
+            isSlide = true;
+            gameObject.layer = 2;//ignore trigger
+            var targetPos = new Vector3(transform.position.x + slideDistance * transform.localScale.x, transform.position.y);
+            _slideCoroutine = StartCoroutine(TriggerSlide(targetPos));
+            _character.PowerSpend(slidePowerCost);
+        }
+        private IEnumerator TriggerSlide(Vector3 target)
+        {
+            //rb.MovePosition(target);
+            while (MathF.Abs(target.x - transform.position.x) > 0.2f)
             {
-                SlideEnd();
-                yield break;
+                //Debug.Log(MathF.Abs(target.x - transform.position.x));
+                if (!FrontIsGround() || TouchFrontWall()) 
+                {
+                    SlideEnd();
+                    yield break;
+                }
+
+                _rigidbody.MovePosition(new Vector2(transform.position.x + transform.localScale.x * slideFrameSpeed, transform.position.y));
+
+                yield return null;
             }
-
-            rb.MovePosition(new Vector2(transform.position.x + transform.localScale.x * slideFrameSpeed, transform.position.y));
-
-            yield return null;
+            //Debug.Log("slide end");
+            SlideEnd();
         }
-        //Debug.Log("slide end");
-        SlideEnd();
-    }
-    private bool TouchFrontWall()
-    {
-        return physicsCheck.touchLeftWall && transform.localScale.x == -1 || physicsCheck.touchRightWall && transform.localScale.x == 1;
-    }
-    private void SlideEnd()
-    {
-        isSlide = false;
-        gameObject.layer = 7;//player
-    }
-    private void CrouchEnd(InputAction.CallbackContext obj)
-    {
-        if (isCrouch)
+        private bool TouchFrontWall()
         {
-            isCrouch = false;
-            capsuleCollider.size = originalSize;
-            capsuleCollider.offset = originalOffset;
-            physicsCheck.resetOffset();
+            return _physicsCheck.touchLeftWall && transform.localScale.x == -1 || _physicsCheck.touchRightWall && transform.localScale.x == 1;
         }
-    }
-
-    private void PlayerAttack(InputAction.CallbackContext obj)
-    {
-        if(IsGround())
+        private void SlideEnd()
         {
-            playerAnimation.PlayAttack();
+            isSlide = false;
+            gameObject.layer = 7;//player
+        }
+        private void CrouchEnd(InputAction.CallbackContext obj)
+        {
+            if (isCrouch)
+            {
+                isCrouch = false;
+                _capsuleCollider.size = _originalSize;
+                _capsuleCollider.offset = _originalOffset;
+                _physicsCheck.ResetOffset();
+            }
+        }
+
+        private void PlayerAttack(InputAction.CallbackContext obj)
+        {
+            if (!IsGround()) return;
+            
+            _playerAnimation.PlayAttack();
             isAttack = true;
         }
-    }
-    #endregion
+        #endregion
 
-    public bool IsGround()
-    {
-        if(transform.localScale.x == 1)
+        public bool IsGround()
         {
-            return physicsCheck.isGround || physicsCheck.leftIsGround;
-        }
-        else
-        {
-            return physicsCheck.isGround || physicsCheck.rightIsGround;
-        }
+            if(transform.localScale.x == 1)
+            {
+                return _physicsCheck.isGround || _physicsCheck.leftIsGround;
+            }
+            else
+            {
+                return _physicsCheck.isGround || _physicsCheck.rightIsGround;
+            }
         
-    }
+        }
 
-    public bool FrontIsGround()
-    {
-        return transform.localScale.x == 1 && physicsCheck.rightIsGround || transform.localScale.x == -1 && physicsCheck.leftIsGround;
-    }
-    public void GetHurt(Transform attacker)
-    {
-        isHurt = true;
-        rb.velocity = Vector2.zero;
-        Vector2 dir = new Vector2((transform.position.x - attacker.position.x), 0).normalized;
-        rb.AddForce(dir*hurtForce,ForceMode2D.Impulse);
-    }
+        private bool FrontIsGround()
+        {
+            return transform.localScale.x == 1 && _physicsCheck.rightIsGround || transform.localScale.x == -1 && _physicsCheck.leftIsGround;
+        }
+        public void GetHurt(Transform attacker)
+        {
+            isHurt = true;
+            _rigidbody.velocity = Vector2.zero;
+            Vector2 dir = new Vector2((transform.position.x - attacker.position.x), 0).normalized;
+            _rigidbody.AddForce(dir * hurtForce, ForceMode2D.Impulse);
+        }
 
-    public void PlayerDead()
-    {
-        gameObject.layer = 2;
-        isDead = true;
-        inputControl.Gameplay.Disable();
-    }
-    private void CheckState()
-    {
-        boxCollider.sharedMaterial = IsGround() ? normal : physicsCheck.onWall ? OnWall : wall;
-        capsuleCollider.sharedMaterial = IsGround() ? normal : physicsCheck.onWall ? OnWall : wall;
+        public void PlayerDead()
+        {
+            gameObject.layer = 2;
+            isDead = true;
+            _inputControl.Gameplay.Disable();
+        }
+        private void CheckState()
+        {
+            _boxCollider.sharedMaterial = IsGround() ? normal : _physicsCheck.onWall ? onWall : wall;
+            _capsuleCollider.sharedMaterial = IsGround() ? normal : _physicsCheck.onWall ? onWall : wall;
 
-        if (isWallJump) StartCoroutine(WallJumpCounter());
+            if (isWallJump) StartCoroutine(WallJumpCounter());
 
-        if (lastLeftTimeCounter > -1) lastLeftTimeCounter -= Time.deltaTime;
-        if (lastRightTimeCounter > -1) lastRightTimeCounter -= Time.deltaTime;
+            if (_lastLeftTimeCounter > -1) _lastLeftTimeCounter -= Time.deltaTime;
+            if (_lastRightTimeCounter > -1) _lastRightTimeCounter -= Time.deltaTime;
 
-        if (inputDirection.x > 0) lastRightTimeCounter = lastDirTime;
-        if (inputDirection.x < 0) lastLeftTimeCounter = lastDirTime;
-    }
+            if (inputDirection.x > 0) _lastRightTimeCounter = lastDirTime;
+            if (inputDirection.x < 0) _lastLeftTimeCounter = lastDirTime;
+        }
 
-    IEnumerator WallJumpCounter()
-    {
-        yield return new WaitForSeconds(wallJumpTime);
-        isWallJump = false;
+        private IEnumerator WallJumpCounter()
+        {
+            yield return new WaitForSeconds(wallJumpTime);
+            isWallJump = false;
+        }
     }
 }

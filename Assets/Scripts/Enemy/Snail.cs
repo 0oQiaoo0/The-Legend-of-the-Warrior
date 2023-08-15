@@ -1,52 +1,52 @@
-using System.Collections;
-using System.Collections.Generic;
-using System.Runtime.Remoting.Lifetime;
-using UnityEngine;
+using Utilities;
 
-public class Snail : GroundEnemy
+namespace Enemy
 {
-    private SnailState currentState;
-    private SnailState patrolState;
-    private SnailState skillState;
-    protected override void Awake()
+    public class Snail : GroundEnemy
     {
-        base.Awake();
-        patrolState = new SnailPartolState();
-        skillState = new SnailSkillState();
-    }
-    
-    #region 状态相关
-    protected override void OnEnable()
-    {
-        currentState = patrolState;
-        currentState.OnEnter(this);
-    }
-    protected override void Update()
-    {
-        currentState.LogicUpdate();
-        TimeCounter();
-    }
-    protected override void FixedUpdate()
-    {
-        if (!isWait && !isHurt && !isDead)
-            currentState.PhysicsUpdate();
-    }
-    protected override void OnDisable()
-    {
-        currentState.OnExit();
-    }
-    #endregion
-    public override void SwitchState(NPCState state)
-    {
-        var newState = state switch
+        private SnailState _currentState;
+        private SnailState _patrolState;
+        private SnailState _skillState;
+        protected override void Awake()
         {
-            NPCState.Patrol => patrolState,
-            NPCState.Skill => skillState,
-            _ => null
-        };
+            base.Awake();
+            _patrolState = new SnailPatrolState();
+            _skillState = new SnailSkillState();
+        }
+    
+        #region 状态相关
+        protected override void OnEnable()
+        {
+            _currentState = _patrolState;
+            _currentState.OnEnter(this);
+        }
+        protected override void Update()
+        {
+            _currentState.LogicUpdate();
+            TimeCounter();
+        }
+        protected override void FixedUpdate()
+        {
+            if (!isWait && !isHurt && !isDead)
+                _currentState.PhysicsUpdate();
+        }
+        protected override void OnDisable()
+        {
+            _currentState.OnExit();
+        }
+        #endregion
+        public override void SwitchState(NPCState state)
+        {
+            var newState = state switch
+            {
+                NPCState.Patrol => _patrolState,
+                NPCState.Skill => _skillState,
+                _ => null
+            };
 
-        currentState.OnExit();
-        currentState = newState;
-        currentState.OnEnter(this);
+            _currentState.OnExit();
+            _currentState = newState;
+            _currentState?.OnEnter(this);
+        }
     }
 }

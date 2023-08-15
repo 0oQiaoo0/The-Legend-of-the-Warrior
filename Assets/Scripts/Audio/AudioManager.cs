@@ -1,53 +1,55 @@
-using System;
-using System.Collections;
-using System.Collections.Generic;
+using SO;
 using UnityEngine;
-using UnityEngine.Audio;
-public class AudioManager : MonoBehaviour
+using UnityEngine.Serialization;
+
+namespace Audio
 {
-    [Header("事件监听")]
-    public PlayAudioEventSO FXEvent;
-    public PlayAudioEventSO BGMEvent;
-    public VoidEventSO afterSceneLoadedEvent;
-    [Header("组件")]
-    public AudioSource BGMSource;
-    public AudioSource FXSource;
-
-    private void OnEnable()
+    public class AudioManager : MonoBehaviour
     {
-        FXEvent.OnEventRaised += OnFXEvent;
-        BGMEvent.OnEventRaised += OnBGMEvent;
-        afterSceneLoadedEvent.OnEventRaised += OnAfterSceneLoadedEvent;
-    }
+        [FormerlySerializedAs("FXEvent")] [Header("事件监听")]
+        public PlayAudioEventSO fxEvent;
+        [FormerlySerializedAs("BGMEvent")] public PlayAudioEventSO bgmEvent;
+        public VoidEventSO afterSceneLoadedEvent;
+        [FormerlySerializedAs("BGMSource")] [Header("组件")]
+        public AudioSource bgmSource;
+        [FormerlySerializedAs("FXSource")] public AudioSource fxSource;
 
-    private void OnDisable()
-    {
-        FXEvent.OnEventRaised -= OnFXEvent;
-        BGMEvent.OnEventRaised -= OnBGMEvent;
-        afterSceneLoadedEvent.OnEventRaised -= OnAfterSceneLoadedEvent;
-    }
+        private void OnEnable()
+        {
+            fxEvent.OnEventRaised += OnFXEvent;
+            bgmEvent.OnEventRaised += OnBGMEvent;
+            afterSceneLoadedEvent.OnEventRaised += OnAfterSceneLoadedEvent;
+        }
 
-    private void OnBGMEvent(AudioClip clip)
-    {
-        BGMSource.clip = clip;
-        BGMSource.Play();
-    }
+        private void OnDisable()
+        {
+            fxEvent.OnEventRaised -= OnFXEvent;
+            bgmEvent.OnEventRaised -= OnBGMEvent;
+            afterSceneLoadedEvent.OnEventRaised -= OnAfterSceneLoadedEvent;
+        }
 
-    private void OnFXEvent(AudioClip clip)
-    {
-        FXSource.clip = clip;
-        FXSource.Play();
-    }
+        private void OnBGMEvent(AudioClip clip)
+        {
+            bgmSource.clip = clip;
+            bgmSource.Play();
+        }
 
-    private void OnAfterSceneLoadedEvent()
-    {
-        playNewBGM();
-    }
-    private void playNewBGM()
-    {
-        var obj = GameObject.FindWithTag("BGM");
-        if (!obj) return;
+        private void OnFXEvent(AudioClip clip)
+        {
+            fxSource.clip = clip;
+            fxSource.Play();
+        }
 
-        OnBGMEvent(obj.GetComponent<AudioDefination>().audioClip);
+        private void OnAfterSceneLoadedEvent()
+        {
+            PlayNewBGM();
+        }
+        private void PlayNewBGM()
+        {
+            var obj = GameObject.FindWithTag("BGM");
+            if (!obj) return;
+
+            OnBGMEvent(obj.GetComponent<AudioDefinition>().audioClip);
+        }
     }
 }

@@ -1,20 +1,21 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
 
-public class Menu : MonoBehaviour
+namespace UI
 {
-    public GameObject newGameButton;
-
-    private void OnEnable()
+    public class Menu : MonoBehaviour
     {
-        EventSystem.current.SetSelectedGameObject(newGameButton);
-    }
+        public GameObject newGameButton;
 
-    public void ExitGame()
-    {
-        Debug.Log("Quit!");
-        Application.Quit();
+        private void OnEnable()
+        {
+            EventSystem.current.SetSelectedGameObject(newGameButton);
+        }
+
+        public void ExitGame()
+        {
+            Debug.Log("Quit!");
+            Application.Quit();
+        }
     }
 }

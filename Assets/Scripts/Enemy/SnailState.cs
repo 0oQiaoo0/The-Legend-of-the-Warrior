@@ -1,6 +1,9 @@
-public abstract class SnailState : EnemyState
+namespace Enemy
 {
-    public Snail currentEnemy;
+    public abstract class SnailState : EnemyState
+    {
+        protected Snail CurrentEnemy;
 
-    public abstract void OnEnter(Snail enemy);
+        public abstract void OnEnter(Snail enemy);
+    }
 }

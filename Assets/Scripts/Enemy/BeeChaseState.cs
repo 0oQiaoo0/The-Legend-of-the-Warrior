@@ -1,45 +1,48 @@
 using UnityEngine;
 
-public class BeeChaseState : BeeState
+namespace Enemy
 {
-    public override void OnEnter(Bee enemy)
+    public class BeeChaseState : BeeState
     {
-        currentEnemy = enemy;
-        currentEnemy.currentSpeed = currentEnemy.chaseSpeed;
-        currentEnemy.isWait = false;
-        currentEnemy.waitTimeCounter = currentEnemy.waitTime;
-        currentEnemy.canAttack = false;
-        currentEnemy.animator.SetBool("isChase", true);
-    }
-    public override void LogicUpdate()
-    {
-        currentEnemy.ChangeTarget(new Vector3(currentEnemy.attacker.position.x, currentEnemy.attacker.position.y + 1.5f, 0));
-
-        currentEnemy.ChangeDirectionWithJudge();
-
-        if ((currentEnemy.target - currentEnemy.transform.position).magnitude <= currentEnemy.attack.attackRange)
+        public override void OnEnter(Bee enemy)
         {
-            //攻击
-            currentEnemy.canAttack = true;
-            if (!currentEnemy.isHurt && !currentEnemy.isDead)
-                currentEnemy.rb.velocity = Vector2.zero;
+            CurrentEnemy = enemy;
+            CurrentEnemy.currentSpeed = CurrentEnemy.chaseSpeed;
+            CurrentEnemy.isWait = false;
+            CurrentEnemy.waitTimeCounter = CurrentEnemy.waitTime;
+            CurrentEnemy.canAttack = false;
+            CurrentEnemy.animator.SetBool("isChase", true);
         }
-        else
+        public override void LogicUpdate()
         {
-            currentEnemy.canAttack = false;
-        }
-    }
+            CurrentEnemy.ChangeTarget(new Vector3(CurrentEnemy.attacker.position.x, CurrentEnemy.attacker.position.y + 1.5f, 0));
 
-    public override void PhysicsUpdate()
-    {
-        if (!currentEnemy.canAttack && !currentEnemy.isWait && !currentEnemy.isHurt && !currentEnemy.isDead) 
-        {
-            currentEnemy.Move();
+            CurrentEnemy.ChangeDirectionWithJudge();
+
+            if ((CurrentEnemy.target - CurrentEnemy.transform.position).magnitude <= CurrentEnemy.attack.attackRange)
+            {
+                //攻击
+                CurrentEnemy.canAttack = true;
+                if (!CurrentEnemy.isHurt && !CurrentEnemy.isDead)
+                    CurrentEnemy.rb.velocity = Vector2.zero;
+            }
+            else
+            {
+                CurrentEnemy.canAttack = false;
+            }
         }
-    }
-    public override void OnExit()
-    {
-        currentEnemy.canAttack = false;
-        currentEnemy.animator.SetBool("isChase", false);
+
+        public override void PhysicsUpdate()
+        {
+            if (!CurrentEnemy.canAttack && !CurrentEnemy.isWait && !CurrentEnemy.isHurt && !CurrentEnemy.isDead) 
+            {
+                CurrentEnemy.Move();
+            }
+        }
+        public override void OnExit()
+        {
+            CurrentEnemy.canAttack = false;
+            CurrentEnemy.animator.SetBool("isChase", false);
+        }
     }
 }

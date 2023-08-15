@@ -1,108 +1,108 @@
-using System;
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.InputSystem.XInput;
+using Utilities;
 
-public class Sign : MonoBehaviour
+namespace Player
 {
-    private PlayerInoutControl playerInput;
-    private Animator animator;
-    public Transform playerTrans;
-    public GameObject signSprite;
-
-    private IInteractable targetItem;
-    private bool canPress;
-
-    private InputDevice inputDevice;
-
-    private void Awake()
+    public class Sign : MonoBehaviour
     {
-        //animator = GetComponentInChildren<Animator>();
-        animator = signSprite.GetComponent<Animator>();
-        playerInput = new PlayerInoutControl();
-        playerInput.Enable();
+        private PlayerInoutControl _playerInput;
+        private Animator _animator;
+        public Transform playerTrans;
+        public GameObject signSprite;
 
-        inputDevice = new InputDevice();
-    }
+        private IInteractable _targetItem;
+        private bool _canPress;
 
-    private void OnEnable()
-    {
-        InputSystem.onActionChange += OnActionChange;
-        playerInput.Gameplay.Interact.started += OnConfirm;
-    }
+        private InputDevice _inputDevice;
 
-    private void OnConfirm(InputAction.CallbackContext context)
-    {
-        if (canPress)
+        private void Awake()
         {
-            targetItem.TriggerAction();
+            //animator = GetComponentInChildren<Animator>();
+            _animator = signSprite.GetComponent<Animator>();
+            _playerInput = new PlayerInoutControl();
+            _playerInput.Enable();
+
+            _inputDevice = new InputDevice();
         }
-    }
 
-    /// <summary>
-    /// 切换设备同时切换按钮动画
-    /// </summary>
-    /// <param name="obj"></param>
-    /// <param name="actionChange"></param>
-    private void OnActionChange(object obj, InputActionChange actionChange)
-    {
-        if(actionChange == InputActionChange.ActionStarted)
+        private void OnEnable()
         {
-            inputDevice = ((InputAction)obj).activeControl.device;
+            InputSystem.onActionChange += OnActionChange;
+            _playerInput.Gameplay.Interact.started += OnConfirm;
+        }
 
-            switch (inputDevice.device)
+        private void OnConfirm(InputAction.CallbackContext context)
+        {
+            if (_canPress)
             {
-                case Keyboard:
-                    animator.Play("keyboard"); break;
-                case XInputController:
-                    animator.Play("xbox");break;
+                _targetItem.TriggerAction();
             }
         }
-    }
-    private void OnDisable()
-    {
-        InputSystem.onActionChange -= OnActionChange;
-        playerInput.Gameplay.Interact.started -= OnConfirm;
-        HideSign();
-    }
-    private void Update()
-    {
-        signSprite.transform.localScale = playerTrans.localScale;
-    }
 
-    private void OnTriggerStay2D(Collider2D collision)
-    {
-        if (collision.CompareTag("Interactable"))
+        /// <summary>
+        /// 切换设备同时切换按钮动画
+        /// </summary>
+        /// <param name="obj"></param>
+        /// <param name="actionChange"></param>
+        private void OnActionChange(object obj, InputActionChange actionChange)
         {
-            DisplaySign(collision);
+            if(actionChange == InputActionChange.ActionStarted)
+            {
+                _inputDevice = ((InputAction)obj).activeControl.device;
+
+                switch (_inputDevice.device)
+                {
+                    case Keyboard:
+                        _animator.Play("keyboard"); break;
+                    case XInputController:
+                        _animator.Play("xbox");break;
+                }
+            }
         }
-        else
+        private void OnDisable()
         {
+            InputSystem.onActionChange -= OnActionChange;
+            _playerInput.Gameplay.Interact.started -= OnConfirm;
             HideSign();
         }
-    }
-
-    private void DisplaySign(Collider2D collision)
-    {
-        canPress = true;
-        targetItem = collision.GetComponent<IInteractable>();
-        signSprite.GetComponent<SpriteRenderer>().enabled = true;
-        switch (inputDevice.device)
+        private void Update()
         {
-            case Keyboard:
-                animator.Play("keyboard"); break;
-            case XInputController:
-                animator.Play("xbox"); break;
-            default:break;
+            signSprite.transform.localScale = playerTrans.localScale;
         }
-    }
 
-    private void HideSign()
-    {
-        canPress = false;
-        targetItem = null;
-        signSprite.GetComponent<SpriteRenderer>().enabled = false;
+        private void OnTriggerStay2D(Collider2D collision)
+        {
+            if (collision.CompareTag("Interactable"))
+            {
+                DisplaySign(collision);
+            }
+            else
+            {
+                HideSign();
+            }
+        }
+
+        private void DisplaySign(Collider2D collision)
+        {
+            _canPress = true;
+            _targetItem = collision.GetComponent<IInteractable>();
+            signSprite.GetComponent<SpriteRenderer>().enabled = true;
+            switch (_inputDevice.device)
+            {
+                case Keyboard:
+                    _animator.Play("keyboard"); break;
+                case XInputController:
+                    _animator.Play("xbox"); break;
+            }
+        }
+
+        private void HideSign()
+        {
+            _canPress = false;
+            _targetItem = null;
+            signSprite.GetComponent<SpriteRenderer>().enabled = false;
+        }
     }
 }

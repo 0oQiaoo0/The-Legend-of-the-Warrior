@@ -1,28 +1,30 @@
-using System.Collections;
-using System.Collections.Generic;
+using DG.Tweening;
+using SO;
 using UnityEngine;
 using UnityEngine.UI;
-using DG.Tweening;
 
-public class FadeCanvas : MonoBehaviour
+namespace UI
 {
-    [Header("事件监听")]
-    public FadeEventSO fadeEvent;
-
-    public Image fadeImage;
-
-    private void OnEnable()
+    public class FadeCanvas : MonoBehaviour
     {
-        fadeEvent.OnEventRaised += OnFadeEvent;
-    }
+        [Header("事件监听")]
+        public FadeEventSO fadeEvent;
 
-    private void OnDisable()
-    {
-        fadeEvent.OnEventRaised -= OnFadeEvent;
-    }
+        public Image fadeImage;
 
-    private void OnFadeEvent(Color color,float duration)
-    {
-        fadeImage.DOBlendableColor(color, duration);
+        private void OnEnable()
+        {
+            fadeEvent.OnEventRaised += OnFadeEvent;
+        }
+
+        private void OnDisable()
+        {
+            fadeEvent.OnEventRaised -= OnFadeEvent;
+        }
+
+        private void OnFadeEvent(Color color,float duration)
+        {
+            fadeImage.DOBlendableColor(color, duration);
+        }
     }
 }

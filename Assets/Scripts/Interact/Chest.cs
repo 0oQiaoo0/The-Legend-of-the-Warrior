@@ -1,40 +1,43 @@
-using System.Collections;
-using System.Collections.Generic;
+using Audio;
 using UnityEngine;
+using Utilities;
 
-public class Chest : MonoBehaviour, IInteractable
+namespace Interact
 {
-    private SpriteRenderer spriteRenderer;
-    private AudioDefination audioDefination;
-
-    public Sprite openSprite;
-    public Sprite closeSprite;
-    public bool isDone;
-
-    private void Awake()
+    public class Chest : MonoBehaviour, IInteractable
     {
-        spriteRenderer = GetComponent<SpriteRenderer>();
-        audioDefination = GetComponent<AudioDefination>() ?? null;
-    }
+        private SpriteRenderer _spriteRenderer;
+        private AudioDefinition _audioDefinition;
 
-    private void OnEnable()
-    {
-        spriteRenderer.sprite = isDone ? openSprite : closeSprite;
-    }
+        public Sprite openSprite;
+        public Sprite closeSprite;
+        public bool isDone;
 
-    public void TriggerAction()
-    {
-        if (!isDone)
+        private void Awake()
         {
-            OpenChest();
+            _spriteRenderer = GetComponent<SpriteRenderer>();
+            _audioDefinition = GetComponent<AudioDefinition>() ?? null;
         }
-    }
 
-    private void OpenChest()
-    {
-        gameObject.tag = "Finish";
-        spriteRenderer.sprite = openSprite;
-        isDone = true;
-        audioDefination?.PlayAudioClip();
+        private void OnEnable()
+        {
+            _spriteRenderer.sprite = isDone ? openSprite : closeSprite;
+        }
+
+        public void TriggerAction()
+        {
+            if (!isDone)
+            {
+                OpenChest();
+            }
+        }
+
+        private void OpenChest()
+        {
+            gameObject.tag = "Finish";
+            _spriteRenderer.sprite = openSprite;
+            isDone = true;
+            if(_audioDefinition) _audioDefinition.PlayAudioClip();
+        }
     }
 }

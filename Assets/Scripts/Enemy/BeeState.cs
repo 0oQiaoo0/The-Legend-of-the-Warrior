@@ -1,5 +1,8 @@
-public abstract class BeeState : EnemyState
+namespace Enemy
 {
-    public Bee currentEnemy;
-    public abstract void OnEnter(Bee enemy);
+    public abstract class BeeState : EnemyState
+    {
+        protected Bee CurrentEnemy;
+        public abstract void OnEnter(Bee enemy);
+    }
 }

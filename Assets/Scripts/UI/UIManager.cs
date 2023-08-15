@@ -1,56 +1,59 @@
-using System;
-using System.Collections;
-using System.Collections.Generic;
+using General;
+using SO;
 using UnityEngine;
+using Utilities;
 
-public class UIManager : MonoBehaviour
+namespace UI
 {
-    public PlayerStateBar playerStateBar;
-
-    [Header("事件监听")]
-    public CharacterEventSO healthEvent;
-    public CharacterEventSO powerEvent;
-    public SceneLoadEventSO unloadEvent;
-
-    private void OnEnable()
+    public class UIManager : MonoBehaviour
     {
-        healthEvent.OnEventRaised += OnHealthEvent;
-        powerEvent.OnEventRaised += OnPowerEvent;
-        unloadEvent.LoadRequestEvent += OnUnloadEvent;
-    }
+        public PlayerStateBar playerStateBar;
 
-    private void OnDisable()
-    {
-        healthEvent.OnEventRaised -= OnHealthEvent;
-        powerEvent.OnEventRaised -= OnPowerEvent;
-        unloadEvent.LoadRequestEvent -= OnUnloadEvent;
-    }
+        [Header("事件监听")]
+        public CharacterEventSO healthEvent;
+        public CharacterEventSO powerEvent;
+        public SceneLoadEventSO unloadEvent;
 
-    private void OnUnloadEvent(GameSceneSO sceneToLoad, Vector3 arg1, bool arg2)
-    {
-        var isMenu = sceneToLoad.sceneType == SceneType.Menu;
-        playerStateBar.gameObject.SetActive(!isMenu);
-    }
+        private void OnEnable()
+        {
+            healthEvent.OnEventRaised += OnHealthEvent;
+            powerEvent.OnEventRaised += OnPowerEvent;
+            unloadEvent.LoadRequestEvent += OnUnloadEvent;
+        }
 
-    private void OnHealthEvent(Character character)
-    {
-        var persentage = character.currentHealth / character.maxHealth;
-        playerStateBar.OnHealthChange(persentage);
-    }
+        private void OnDisable()
+        {
+            healthEvent.OnEventRaised -= OnHealthEvent;
+            powerEvent.OnEventRaised -= OnPowerEvent;
+            unloadEvent.LoadRequestEvent -= OnUnloadEvent;
+        }
 
-    private void OnPowerEvent(Character character)
-    {
-        var persentage = character.currentPower / character.maxPower;
-        playerStateBar.OnPowerChange(persentage);
-    }
+        private void OnUnloadEvent(GameSceneSO sceneToLoad, Vector3 arg1, bool arg2)
+        {
+            var isMenu = sceneToLoad.sceneType == SceneType.Menu;
+            playerStateBar.gameObject.SetActive(!isMenu);
+        }
 
-    public void PowerLack()
-    {
-        playerStateBar.PowerLack();
-    }
+        private void OnHealthEvent(Character character)
+        {
+            var percentage = character.currentHealth / character.maxHealth;
+            playerStateBar.OnHealthChange(percentage);
+        }
 
-    public void PowerLackEnd()
-    {
-        playerStateBar.PowerLackEnd();
+        private void OnPowerEvent(Character character)
+        {
+            var percentage = character.currentPower / character.maxPower;
+            playerStateBar.OnPowerChange(percentage);
+        }
+
+        public void PowerLack()
+        {
+            playerStateBar.PowerLack();
+        }
+
+        public void PowerLackEnd()
+        {
+            playerStateBar.PowerLackEnd();
+        }
     }
 }

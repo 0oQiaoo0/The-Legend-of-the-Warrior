@@ -1,4 +1,7 @@
-public interface IInteractable
+namespace Utilities
 {
-    void TriggerAction();
+    public interface IInteractable
+    {
+        void TriggerAction();
+    }
 }

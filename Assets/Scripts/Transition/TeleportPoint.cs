@@ -1,16 +1,20 @@
-using System.Collections;
-using System.Collections.Generic;
+using SO;
 using UnityEngine;
+using UnityEngine.Serialization;
+using Utilities;
 
-public class TeleportPoint : MonoBehaviour, IInteractable
+namespace Transition
 {
-    public SceneLoadEventSO loadEventSO;
-
-    public GameSceneSO SceneToGo;
-
-    public Vector3 positionToGo;
-    public void TriggerAction()
+    public class TeleportPoint : MonoBehaviour, IInteractable
     {
-        loadEventSO.RaiseEvent(SceneToGo, positionToGo, true);
+        public SceneLoadEventSO loadEventSO;
+
+        [FormerlySerializedAs("SceneToGo")] public GameSceneSO sceneToGo;
+
+        public Vector3 positionToGo;
+        public void TriggerAction()
+        {
+            loadEventSO.RaiseEvent(sceneToGo, positionToGo, true);
+        }
     }
 }

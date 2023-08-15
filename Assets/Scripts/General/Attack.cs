@@ -1,16 +1,17 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
-public class Attack : MonoBehaviour
+namespace General
 {
-    public int damage;
-    public float attackRange;
-    public float attackRate;
-
-    private void OnTriggerStay2D(Collider2D other)
+    public class Attack : MonoBehaviour
     {
-        Debug.Log(this.name + " attacked " + other.name);
-        other.GetComponent<Character>()?.TakeDamage(this);
+        public int damage;
+        public float attackRange;
+        public float attackRate;
+
+        private void OnTriggerStay2D(Collider2D other)
+        {
+            Debug.Log(name + " attacked " + other.name);
+            other.GetComponent<Character>()?.TakeDamage(this);
+        }
     }
 }

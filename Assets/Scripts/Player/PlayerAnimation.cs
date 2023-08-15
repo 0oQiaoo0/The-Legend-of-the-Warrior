@@ -1,44 +1,47 @@
-using System.Collections;
-using System.Collections.Generic;
+using General;
 using UnityEngine;
 
-public class PlayerAnimation : MonoBehaviour
+namespace Player
 {
-    private Animator animator;
-    private Rigidbody2D rb;
-    private PlayerController playerController;
-    private PhysicsCheck physicsCheck;
-    // Start is called before the first frame update
-    void Awake()
+    public class PlayerAnimation : MonoBehaviour
     {
-        animator = GetComponent<Animator>();
-        rb = GetComponent<Rigidbody2D>();
-        playerController = GetComponent<PlayerController>();
-        physicsCheck = GetComponent<PhysicsCheck>();
-    }
-    private void Update()
-    {
-        SetAnimation();
-    }
-    public void SetAnimation()
-    {
-        animator.SetFloat("velocityX", Mathf.Abs(rb.velocity.x));
-        animator.SetFloat("velocityY", rb.velocity.y);
-        animator.SetBool("isGround", playerController.IsGround());
-        animator.SetBool("isCrouch", playerController.isCrouch);
-        animator.SetBool("isDead", playerController.isDead);
-        animator.SetBool("isAttack", playerController.isAttack);
-        animator.SetBool("onWall", physicsCheck.onWall);
-        animator.SetBool("isSlide", playerController.isSlide);
-    }
+        private Animator _animator;
+        private Rigidbody2D _rigidbody;
+        private PlayerController _playerController;
+        private PhysicsCheck _physicsCheck;
+        // Start is called before the first frame update
+        private void Awake()
+        {
+            _animator = GetComponent<Animator>();
+            _rigidbody = GetComponent<Rigidbody2D>();
+            _playerController = GetComponent<PlayerController>();
+            _physicsCheck = GetComponent<PhysicsCheck>();
+        }
+        private void Update()
+        {
+            SetAnimation();
+        }
 
-    public void PlayHurt()
-    {
-        animator.SetTrigger("hurt");
-    }
+        private void SetAnimation()
+        {
+            _animator.SetFloat("velocityX", Mathf.Abs(_rigidbody.velocity.x));
+            _animator.SetFloat("velocityY", _rigidbody.velocity.y);
+            _animator.SetBool("isGround", _playerController.IsGround());
+            _animator.SetBool("isCrouch", _playerController.isCrouch);
+            _animator.SetBool("isDead", _playerController.isDead);
+            _animator.SetBool("isAttack", _playerController.isAttack);
+            _animator.SetBool("onWall", _physicsCheck.onWall);
+            _animator.SetBool("isSlide", _playerController.isSlide);
+        }
 
-    public void PlayAttack()
-    {
-        animator.SetTrigger("attack");
+        public void PlayHurt()
+        {
+            _animator.SetTrigger("hurt");
+        }
+
+        public void PlayAttack()
+        {
+            _animator.SetTrigger("attack");
+        }
     }
 }

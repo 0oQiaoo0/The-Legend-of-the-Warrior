@@ -1,41 +1,43 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
+using Utilities;
 
-public class BeePartolState : BeeState
+namespace Enemy
 {
-    public override void OnEnter(Bee enemy)
+    public class BeePartolState : BeeState
     {
-        currentEnemy = enemy;
-        currentEnemy.currentSpeed = currentEnemy.normalSpeed;
-        currentEnemy.GetNewPoint();
-        currentEnemy.ChangeDirectionWithJudge();
-    }
-    public override void LogicUpdate()
-    {
-        if (currentEnemy.FoundPlayer())
+        public override void OnEnter(Bee enemy)
         {
-            currentEnemy.SwitchState(NPCState.Chase);
-            return;
+            CurrentEnemy = enemy;
+            CurrentEnemy.currentSpeed = CurrentEnemy.normalSpeed;
+            CurrentEnemy.GetNewPoint();
+            CurrentEnemy.ChangeDirectionWithJudge();
         }
+        public override void LogicUpdate()
+        {
+            if (CurrentEnemy.FoundPlayer())
+            {
+                CurrentEnemy.SwitchState(NPCState.Chase);
+                return;
+            }
 
-        if (Mathf.Abs(currentEnemy.target.x - currentEnemy.transform.position.x) < 0.1f
-            && Mathf.Abs(currentEnemy.target.y - currentEnemy.transform.position.y) < 0.1f)
-        {
-            currentEnemy.isWait = true;
-            currentEnemy.rb.velocity = Vector2.zero;
-            currentEnemy.GetNewPoint();
+            if (Mathf.Abs(CurrentEnemy.target.x - CurrentEnemy.transform.position.x) < 0.1f
+                && Mathf.Abs(CurrentEnemy.target.y - CurrentEnemy.transform.position.y) < 0.1f)
+            {
+                CurrentEnemy.isWait = true;
+                CurrentEnemy.rb.velocity = Vector2.zero;
+                CurrentEnemy.GetNewPoint();
+            }
         }
-    }
-    public override void PhysicsUpdate()
-    {
-        if(!currentEnemy.isWait && !currentEnemy.isHurt && !currentEnemy.isDead)
+        public override void PhysicsUpdate()
         {
-            currentEnemy.Move();
+            if(!CurrentEnemy.isWait && !CurrentEnemy.isHurt && !CurrentEnemy.isDead)
+            {
+                CurrentEnemy.Move();
+            }
         }
-    }
-    public override void OnExit()
-    {
-        //throw new System.NotImplementedException();
+        public override void OnExit()
+        {
+            //throw new System.NotImplementedException();
+        }
     }
 }

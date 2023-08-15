@@ -1,12 +1,15 @@
-public enum NPCState
+namespace Utilities
 {
-    Patrol,
-    Chase,
-    Skill
-}
+    public enum NPCState
+    {
+        Patrol,
+        Chase,
+        Skill
+    }
 
-public enum SceneType
-{
-    Location,
-    Menu
+    public enum SceneType
+    {
+        Location,
+        Menu
+    }
 }

@@ -1,53 +1,54 @@
-using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+using Utilities;
 
-public class Boar : GroundEnemy
+namespace Enemy
 {
-    private BoarState currentState;
-    private BoarState patrolState;
-    private BoarState chaseState;
+    public class Boar : GroundEnemy
+    {
+        private BoarState _currentState;
+        private BoarState _patrolState;
+        private BoarState _chaseState;
     
-    protected override void Awake()
-    {
-        base.Awake();
-        patrolState = new BoarPartolState();
-        chaseState = new BoarChaseState();
-    }
-    #region 状态相关
-    protected override void OnEnable()
-    {
-        currentState = patrolState;
-        currentState.OnEnter(this);
-    }
-    protected override void Update()
-    {
-        currentState.LogicUpdate();
-        TimeCounter();
-    }
-    protected override void FixedUpdate()
-    {
-        if (!isWait && !isHurt && !isDead)
-            currentState.PhysicsUpdate();
-    }
-    protected override void OnDisable()
-    {
-        currentState.OnExit();
-    }
-    #endregion
-    public override void SwitchState(NPCState state)
-    {
-        var newState = state switch
+        protected override void Awake()
         {
-            NPCState.Patrol => patrolState,
-            NPCState.Chase => chaseState,
-            _ => null
-        };
+            base.Awake();
+            _patrolState = new BoarPatrolState();
+            _chaseState = new BoarChaseState();
+        }
+        #region 状态相关
+        protected override void OnEnable()
+        {
+            _currentState = _patrolState;
+            _currentState.OnEnter(this);
+        }
+        protected override void Update()
+        {
+            _currentState.LogicUpdate();
+            TimeCounter();
+        }
+        protected override void FixedUpdate()
+        {
+            if (!isWait && !isHurt && !isDead)
+                _currentState.PhysicsUpdate();
+        }
+        protected override void OnDisable()
+        {
+            _currentState.OnExit();
+        }
+        #endregion
+        public override void SwitchState(NPCState state)
+        {
+            var newState = state switch
+            {
+                NPCState.Patrol => _patrolState,
+                NPCState.Chase => _chaseState,
+                _ => null
+            };
 
-        currentState.OnExit();
-        currentState = newState;
-        currentState.OnEnter(this);
-    }
+            _currentState.OnExit();
+            _currentState = newState;
+            _currentState?.OnEnter(this);
+        }
 
     
+    }
 }

@@ -1,9 +1,10 @@
 using System.Collections;
 using System.Collections.Generic;
+using General;
 using UnityEngine;
 
 [RequireComponent(typeof(PhysicsCheck))]
-public abstract class GroundEnemy : Enemy
+public abstract class GroundEnemy : Enemy.Enemy
 {
     [HideInInspector] public PhysicsCheck physicsCheck;
 
