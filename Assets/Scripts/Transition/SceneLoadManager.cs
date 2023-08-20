@@ -80,9 +80,9 @@ namespace Transition
             }
             _isLoading = true;
 
-            this._sceneToLoad = sceneToLoad;
-            this._posToGo = posToGo;
-            this._fadeScreen = fadeScreen;
+            _sceneToLoad = sceneToLoad;
+            _posToGo = posToGo;
+            _fadeScreen = fadeScreen;
 
             if (currentLoadScene)
             {

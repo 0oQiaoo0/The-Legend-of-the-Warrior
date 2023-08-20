@@ -3,7 +3,7 @@ using Utilities;
 
 namespace Enemy
 {
-    public class BeePartolState : BeeState
+    public class BeePatrolState : BeeState
     {
         public override void OnEnter(Bee enemy)
         {

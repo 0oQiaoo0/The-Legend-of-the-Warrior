@@ -26,7 +26,7 @@ namespace Enemy
         {
             base.Awake();
             attack = GetComponent<Attack>();
-            _patrolState = new BeePartolState(); 
+            _patrolState = new BeePatrolState(); 
             _chaseState = new BeeChaseState();
             spawnPoint = transform.position;
             _attackRateCounter = 0;

@@ -223,13 +223,13 @@ MonoBehaviour:
   invulnerableDuration: 0.1
   invulnerableCounter: 0
   invulnerable: 0
-  OnHealthChange:
+  onHealthChange:
     m_PersistentCalls:
       m_Calls: []
-  OnPowerChange:
+  onPowerChange:
     m_PersistentCalls:
       m_Calls: []
-  OnTakeDamage:
+  onTakeDamage:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 643172283882487903}
@@ -256,7 +256,7 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
-  OnDie:
+  onDie:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 643172283882487903}
@@ -358,7 +358,7 @@ CapsuleCollider2D:
     m_Bits: 0
   m_ExcludeLayers:
     serializedVersion: 2
-    m_Bits: 320
+    m_Bits: 0
   m_LayerOverridePriority: 0
   m_ForceSendLayers:
     serializedVersion: 2

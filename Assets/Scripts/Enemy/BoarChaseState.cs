@@ -4,33 +4,33 @@ namespace Enemy
     {
         public override void OnEnter(Boar enemy)
         {
-            currentEnemy = enemy;
+            CurrentEnemy = enemy;
             //Debug.Log("boar chase enter");
-            currentEnemy.currentSpeed = currentEnemy.chaseSpeed;
-            currentEnemy.animator.SetBool("isRun", true);
+            CurrentEnemy.currentSpeed = CurrentEnemy.chaseSpeed;
+            CurrentEnemy.animator.SetBool("isRun", true);
 
-            if (currentEnemy.isWait)
+            if (CurrentEnemy.isWait)
             {
-                currentEnemy.isWait = false;
-                currentEnemy.waitTimeCounter = currentEnemy.waitTime;
+                CurrentEnemy.isWait = false;
+                CurrentEnemy.waitTimeCounter = CurrentEnemy.waitTime;
             }
         }
         public override void LogicUpdate()
         {
-            if (!currentEnemy.CheckFrontGround() || currentEnemy.CheckFrontWall())
+            if (!CurrentEnemy.CheckFrontGround() || CurrentEnemy.CheckFrontWall())
             {
-                currentEnemy.ChangeDirection(); 
+                CurrentEnemy.ChangeDirection(); 
             }
         }
 
         public override void PhysicsUpdate()
         {
-            if (!currentEnemy.isWait && !currentEnemy.isHurt && !currentEnemy.isDead)
-                currentEnemy.Move();
+            if (!CurrentEnemy.isWait && !CurrentEnemy.isHurt && !CurrentEnemy.isDead)
+                CurrentEnemy.Move();
         }
         public override void OnExit()
         {
-            currentEnemy.animator.SetBool("isRun", false);
+            CurrentEnemy.animator.SetBool("isRun", false);
         }
     }
 }

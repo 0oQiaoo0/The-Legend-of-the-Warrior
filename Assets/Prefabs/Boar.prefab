@@ -179,7 +179,7 @@ CapsuleCollider2D:
     m_Bits: 0
   m_ExcludeLayers:
     serializedVersion: 2
-    m_Bits: 324
+    m_Bits: 0
   m_LayerOverridePriority: 10
   m_ForceSendLayers:
     serializedVersion: 2
@@ -241,13 +241,13 @@ MonoBehaviour:
   invulnerableDuration: 0.5
   invulnerableCounter: 0
   invulnerable: 0
-  OnHealthChange:
+  onHealthChange:
     m_PersistentCalls:
       m_Calls: []
-  OnPowerChange:
+  onPowerChange:
     m_PersistentCalls:
       m_Calls: []
-  OnTakeDamage:
+  onTakeDamage:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 2665990193503197195}
@@ -274,7 +274,7 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
-  OnDie:
+  onDie:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 2665990193503197195}

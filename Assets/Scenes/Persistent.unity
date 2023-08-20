@@ -1675,11 +1675,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ec77ffed3faa6544da5eaf65390add43, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  FXEvent: {fileID: 11400000, guid: 6b37f7b5f0e38ad489fe789650f97076, type: 2}
-  BGMEvent: {fileID: 11400000, guid: b97df724b5c0c8b45af828977c290db4, type: 2}
+  fxEvent: {fileID: 11400000, guid: 6b37f7b5f0e38ad489fe789650f97076, type: 2}
+  bgmEvent: {fileID: 11400000, guid: b97df724b5c0c8b45af828977c290db4, type: 2}
   afterSceneLoadedEvent: {fileID: 11400000, guid: 61094f86787240b46995fa2462d59497, type: 2}
-  BGMSource: {fileID: 807320950}
-  FXSource: {fileID: 807320952}
+  bgmSource: {fileID: 807320950}
+  fxSource: {fileID: 807320952}
 --- !u!1 &831003444
 GameObject:
   m_ObjectHideFlags: 0
@@ -1896,7 +1896,7 @@ BoxCollider2D:
     m_Bits: 0
   m_ExcludeLayers:
     serializedVersion: 2
-    m_Bits: 192
+    m_Bits: 448
   m_LayerOverridePriority: 0
   m_ForceSendLayers:
     serializedVersion: 2
@@ -1910,7 +1910,7 @@ BoxCollider2D:
   m_CallbackLayers:
     serializedVersion: 2
     m_Bits: 4294967295
-  m_IsTrigger: 0
+  m_IsTrigger: 1
   m_UsedByEffector: 0
   m_UsedByComposite: 0
   m_Offset: {x: -0.069107056, y: 0.98552895}
@@ -2850,10 +2850,12 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   uiManager: {fileID: 1201698319}
   inputDirection: {x: 0, y: 0}
-  jumpAudioDefination: {fileID: 1996304339}
+  jumpAudioDefinition: {fileID: 1996304339}
   loadEvent: {fileID: 11400000, guid: eaf104b7b5852a54b934591a9cfee300, type: 2}
   afterSceneLoadedEvent: {fileID: 11400000, guid: 61094f86787240b46995fa2462d59497, type: 2}
   speed: 290
+  runSpeed: 290
+  walkSpeed: 116
   jumpForce: 16.5
   wallJumpForce: 18
   wallJumpTime: 0.15
@@ -2867,7 +2869,7 @@ MonoBehaviour:
   lastDirTime: 0.2
   normal: {fileID: 6200000, guid: 2e7bc02ff6c620c48a7377b80928ca84, type: 2}
   wall: {fileID: 6200000, guid: 9ee60b933031b3746b18ead5b2191bc1, type: 2}
-  OnWall: {fileID: 6200000, guid: 1cca563521a325947a0516d0b78dc5b6, type: 2}
+  onWall: {fileID: 6200000, guid: 1cca563521a325947a0516d0b78dc5b6, type: 2}
   isCrouch: 0
   isHurt: 0
   isDead: 0
@@ -2956,7 +2958,7 @@ MonoBehaviour:
   invulnerableDuration: 2
   invulnerableCounter: 0
   invulnerable: 0
-  OnHealthChange:
+  onHealthChange:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 11400000, guid: 1dcc7184df85c8d4d884d0111c077fcd, type: 2}
@@ -2971,7 +2973,7 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
-  OnPowerChange:
+  onPowerChange:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 11400000, guid: e1e480c645df2784e82c98cf324312be, type: 2}
@@ -2986,7 +2988,7 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
-  OnTakeDamage:
+  onTakeDamage:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 1996304335}
@@ -3025,7 +3027,7 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
-  OnDie:
+  onDie:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 1996304332}
@@ -3067,7 +3069,7 @@ BoxCollider2D:
     m_Bits: 0
   m_ExcludeLayers:
     serializedVersion: 2
-    m_Bits: 256
+    m_Bits: 0
   m_LayerOverridePriority: 0
   m_ForceSendLayers:
     serializedVersion: 2

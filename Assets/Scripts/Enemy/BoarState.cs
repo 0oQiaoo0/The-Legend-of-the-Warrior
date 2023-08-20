@@ -2,7 +2,7 @@ namespace Enemy
 {
     public abstract class BoarState : EnemyState
     {
-        public Boar currentEnemy;
+        protected Boar CurrentEnemy;
 
         public abstract void OnEnter(Boar enemy);
     }

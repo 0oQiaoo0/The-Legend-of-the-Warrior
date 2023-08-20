@@ -1,48 +1,49 @@
-using System.Collections;
-using System.Collections.Generic;
 using General;
 using UnityEngine;
 
-[RequireComponent(typeof(PhysicsCheck))]
-public abstract class GroundEnemy : Enemy.Enemy
+namespace Enemy
 {
-    [HideInInspector] public PhysicsCheck physicsCheck;
-
-    [Header("检测玩家")]
-    public Vector2 checkSize;
-
-    protected override void Awake()
+    [RequireComponent(typeof(PhysicsCheck))]
+    public abstract class GroundEnemy : Enemy
     {
-        base.Awake();
-        physicsCheck = GetComponent<PhysicsCheck>();
-    }
+        [HideInInspector] public PhysicsCheck physicsCheck;
 
-    public override bool FoundPlayer()
-    {
-        return Physics2D.BoxCast(transform.position + (Vector3)centerOffset, checkSize, 0, new Vector2(faceDir, 0), checkDistance, attackLayer);
-    }
+        [Header("检测玩家")]
+        public Vector2 checkSize;
 
-    public override void ChangeDirection()
-    {
-        base.ChangeDirection();
-        physicsCheck.ChangeDirection();
-    }
-
-    public bool CheckFrontWall()
-    {
-        if (physicsCheck.touchLeftWall && faceDir == -1 || physicsCheck.touchRightWall && faceDir == 1)
+        protected override void Awake()
         {
-            return true;
+            base.Awake();
+            physicsCheck = GetComponent<PhysicsCheck>();
         }
-        else return false;
-    }
 
-    public bool CheckFrontGround()
-    {
-        if (physicsCheck.leftIsGround && faceDir == -1 || physicsCheck.rightIsGround && faceDir == 1)
+        public override bool FoundPlayer()
         {
-            return true;
+            return Physics2D.BoxCast(transform.position + (Vector3)centerOffset, checkSize, 0, new Vector2(faceDir, 0), checkDistance, attackLayer);
         }
-        else return false;
+
+        public override void ChangeDirection()
+        {
+            base.ChangeDirection();
+            physicsCheck.ChangeDirection();
+        }
+
+        public bool CheckFrontWall()
+        {
+            if (physicsCheck.touchLeftWall && faceDir == -1 || physicsCheck.touchRightWall && faceDir == 1)
+            {
+                return true;
+            }
+            else return false;
+        }
+
+        public bool CheckFrontGround()
+        {
+            if (physicsCheck.leftIsGround && faceDir == -1 || physicsCheck.rightIsGround && faceDir == 1)
+            {
+                return true;
+            }
+            else return false;
+        }
     }
 }

@@ -272,7 +272,7 @@ MonoBehaviour:
   isDead: 0
   attack: {fileID: 0}
   spawnPoint: {x: 0, y: 0, z: 0}
-  partolRadius: 5
+  patrolRadius: 5
   target: {x: 0, y: 0, z: 0}
   moveDir: {x: 0, y: 0, z: 0}
   canAttack: 0
@@ -312,13 +312,13 @@ MonoBehaviour:
   invulnerableDuration: 0.2
   invulnerableCounter: 0
   invulnerable: 0
-  OnHealthChange:
+  onHealthChange:
     m_PersistentCalls:
       m_Calls: []
-  OnPowerChange:
+  onPowerChange:
     m_PersistentCalls:
       m_Calls: []
-  OnTakeDamage:
+  onTakeDamage:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 5977172673500248580}
@@ -345,7 +345,7 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
-  OnDie:
+  onDie:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 5977172673500248580}
@@ -387,7 +387,7 @@ PolygonCollider2D:
     m_Bits: 0
   m_ExcludeLayers:
     serializedVersion: 2
-    m_Bits: 320
+    m_Bits: 64
   m_LayerOverridePriority: 1
   m_ForceSendLayers:
     serializedVersion: 2

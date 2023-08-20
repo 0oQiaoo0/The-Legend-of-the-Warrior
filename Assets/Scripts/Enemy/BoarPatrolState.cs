@@ -7,35 +7,35 @@ namespace Enemy
     {
         public override void OnEnter(Boar enemy)
         {
-            currentEnemy = enemy;
-            currentEnemy.currentSpeed = currentEnemy.normalSpeed;
-            currentEnemy.animator.SetBool("isWalk", true);
+            CurrentEnemy = enemy;
+            CurrentEnemy.currentSpeed = CurrentEnemy.normalSpeed;
+            CurrentEnemy.animator.SetBool("isWalk", true);
         }
         public override void LogicUpdate()
         {
             //发现player切换到chase
-            if (currentEnemy.FoundPlayer())
+            if (CurrentEnemy.FoundPlayer())
             {
-                currentEnemy.SwitchState(NPCState.Chase);
+                CurrentEnemy.SwitchState(NPCState.Chase);
                 return;
             }
 
-            if (!currentEnemy.CheckFrontGround() || currentEnemy.CheckFrontWall())
+            if (!CurrentEnemy.CheckFrontGround() || CurrentEnemy.CheckFrontWall())
             {
-                currentEnemy.isWait = true;
-                currentEnemy.rb.velocity = new Vector2(0f, currentEnemy.rb.velocity.y);
-                currentEnemy.animator.SetBool("isWalk", false);
+                CurrentEnemy.isWait = true;
+                CurrentEnemy.rb.velocity = new Vector2(0f, CurrentEnemy.rb.velocity.y);
+                CurrentEnemy.animator.SetBool("isWalk", false);
             }
         }
     
         public override void PhysicsUpdate()
         {
-            if (!currentEnemy.isWait && !currentEnemy.isHurt && !currentEnemy.isDead)
-                currentEnemy.Move();
+            if (!CurrentEnemy.isWait && !CurrentEnemy.isHurt && !CurrentEnemy.isDead)
+                CurrentEnemy.Move();
         }
         public override void OnExit()
         {
-            currentEnemy.animator.SetBool("isWalk", false);
+            CurrentEnemy.animator.SetBool("isWalk", false);
         }
     }
 }
