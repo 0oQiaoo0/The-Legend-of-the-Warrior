@@ -21,10 +21,12 @@ namespace Player
         private Character _character;
         public UIManager uiManager;
         public Vector2 inputDirection;
-        [FormerlySerializedAs("jumpAudioDefination")] public AudioDefinition jumpAudioDefinition;
+        public AudioDefinition jumpAudioDefinition;
         [Header("监听事件")]
-        public SceneLoadEventSO loadEvent;
+        public SceneLoadEventSO sceneLoadEvent;
         public VoidEventSO afterSceneLoadedEvent;
+        public VoidEventSO loadGameEvent;
+        public VoidEventSO backToMenuEvent;
         [Header("基本参数")]
         public float speed;
         public float runSpeed = 290;
@@ -51,7 +53,7 @@ namespace Player
         [Header("物理材质")]
         public PhysicsMaterial2D normal;
         public PhysicsMaterial2D wall;
-        [FormerlySerializedAs("OnWall")] public PhysicsMaterial2D onWall;
+        public PhysicsMaterial2D onWall;
         [Header("状态")]
         public bool isCrouch;
         public bool isHurt;
@@ -99,22 +101,29 @@ namespace Player
 
             //攻击
             _inputControl.Gameplay.Attack.started += PlayerAttack;
+            _inputControl.Enable();
         }
-
-    
 
         private void OnEnable()
         {
-            _inputControl.Enable();
-            loadEvent.LoadRequestEvent += OnLoadEvent;
+            sceneLoadEvent.LoadRequestEvent += OnLoadEvent;
             afterSceneLoadedEvent.OnEventRaised += OnAfterSceneLoadedEvent;
+            loadGameEvent.OnEventRaised += OnLoadDataEvent;
+            backToMenuEvent.OnEventRaised += OnLoadDataEvent;
         }
 
         private void OnDisable()
         {
-            _inputControl.Disable();
-            loadEvent.LoadRequestEvent -= OnLoadEvent;
+            // _inputControl.Disable();
+            sceneLoadEvent.LoadRequestEvent -= OnLoadEvent;
             afterSceneLoadedEvent.OnEventRaised -= OnAfterSceneLoadedEvent;
+            loadGameEvent.OnEventRaised -= OnLoadDataEvent;
+            backToMenuEvent.OnEventRaised -= OnLoadDataEvent;
+        }
+
+        private void OnLoadDataEvent()
+        {
+            isDead = false;
         }
 
         private void OnLoadEvent(GameSceneSO arg0, Vector3 arg1, bool arg2)

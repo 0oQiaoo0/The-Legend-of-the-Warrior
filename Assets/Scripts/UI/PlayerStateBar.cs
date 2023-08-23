@@ -9,7 +9,7 @@ namespace UI
         public Image healthImage;
         public Image healthDelayImage;
         public Image powerImage;
-
+        public Vector3 tmp;
         private Animator _powerFillYellowAnimator;
 
         public float delaySpeed;

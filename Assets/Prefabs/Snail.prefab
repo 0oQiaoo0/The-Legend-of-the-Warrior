@@ -18,6 +18,7 @@ GameObject:
   - component: {fileID: 1396824205618064087}
   - component: {fileID: 8272241874164633196}
   - component: {fileID: 670164874190096305}
+  - component: {fileID: -1446652424000411532}
   m_Layer: 8
   m_Name: Snail
   m_TagString: Untagged
@@ -114,7 +115,7 @@ Rigidbody2D:
     m_Bits: 0
   m_ExcludeLayers:
     serializedVersion: 2
-    m_Bits: 384
+    m_Bits: 0
   m_Interpolate: 0
   m_SleepingMode: 1
   m_CollisionDetection: 1
@@ -359,7 +360,7 @@ CapsuleCollider2D:
   m_ExcludeLayers:
     serializedVersion: 2
     m_Bits: 0
-  m_LayerOverridePriority: 0
+  m_LayerOverridePriority: 10
   m_ForceSendLayers:
     serializedVersion: 2
     m_Bits: 4294967295
@@ -378,3 +379,17 @@ CapsuleCollider2D:
   m_Offset: {x: 0.027487835, y: 0.64609534}
   m_Size: {x: 1.7030249, y: 1.2922012}
   m_Direction: 1
+--- !u!114 &-1446652424000411532
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3221311704347493529}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 813251c644715ef44b8604c54452b88b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Type: 0
+  ID: a5fd33bc-83b6-45a9-80da-b6e070315cd7

@@ -6,13 +6,13 @@ namespace Audio
 {
     public class AudioManager : MonoBehaviour
     {
-        [FormerlySerializedAs("FXEvent")] [Header("事件监听")]
+        [Header("事件监听")]
         public PlayAudioEventSO fxEvent;
-        [FormerlySerializedAs("BGMEvent")] public PlayAudioEventSO bgmEvent;
+        public PlayAudioEventSO bgmEvent;
         public VoidEventSO afterSceneLoadedEvent;
-        [FormerlySerializedAs("BGMSource")] [Header("组件")]
+        [Header("组件")]
         public AudioSource bgmSource;
-        [FormerlySerializedAs("FXSource")] public AudioSource fxSource;
+        public AudioSource fxSource;
 
         private void OnEnable()
         {

@@ -9,7 +9,7 @@ namespace Transition
     {
         public SceneLoadEventSO loadEventSO;
 
-        [FormerlySerializedAs("SceneToGo")] public GameSceneSO sceneToGo;
+        public GameSceneSO sceneToGo;
 
         public Vector3 positionToGo;
         public void TriggerAction()

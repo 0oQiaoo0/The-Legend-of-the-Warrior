@@ -14,7 +14,7 @@ namespace Enemy
         private BeeState _chaseState;
         [Header("移动范围")]
         [SerializeField] private Vector3 spawnPoint;
-        [FormerlySerializedAs("partolRadius")] [SerializeField] private float patrolRadius;
+        [SerializeField] private float patrolRadius;
 
         [HideInInspector] public Vector3 target;
         [HideInInspector] public Vector3 moveDir;

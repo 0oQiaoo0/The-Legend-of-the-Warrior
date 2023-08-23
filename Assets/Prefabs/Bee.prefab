@@ -115,6 +115,7 @@ GameObject:
   - component: {fileID: 3689919684112848312}
   - component: {fileID: 2105973600303663993}
   - component: {fileID: 3458911573249678417}
+  - component: {fileID: 2243076605792842672}
   m_Layer: 8
   m_Name: Bee
   m_TagString: Untagged
@@ -428,3 +429,17 @@ PolygonCollider2D:
       - {x: 0.5699055, y: -0.2587266}
       - {x: 0.57285535, y: 0.052196026}
   m_UseDelaunayMesh: 0
+--- !u!114 &2243076605792842672
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5554638486364664956}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 813251c644715ef44b8604c54452b88b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Type: 0
+  ID: 73882940-dac3-4444-abf3-8a3aa3b15964

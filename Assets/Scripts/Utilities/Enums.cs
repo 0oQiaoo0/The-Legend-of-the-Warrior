@@ -12,4 +12,10 @@ namespace Utilities
         Location,
         Menu
     }
+
+    public enum PersistentType
+    {
+        ReadWrite,
+        DoNotPersist
+    }
 }

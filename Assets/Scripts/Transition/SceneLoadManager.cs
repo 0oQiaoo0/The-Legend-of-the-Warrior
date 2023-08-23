@@ -1,4 +1,5 @@
 using System.Collections;
+using SaveLoad;
 using SO;
 using UnityEngine;
 using UnityEngine.ResourceManagement.AsyncOperations;
@@ -8,7 +9,7 @@ using Utilities;
 
 namespace Transition
 {
-    public class SceneLoadManager : MonoBehaviour
+    public class SceneLoadManager : MonoBehaviour, ISavable
     {
         public Transform playerTrans;  // 玩家的Transform组件
 
@@ -22,6 +23,8 @@ namespace Transition
 
         [Header("事件监听")]
         public VoidEventSO newGameEvent;
+
+        public VoidEventSO backToMenuEvent;
 
         [Header("广播")]
         public SceneLoadEventSO loadEventSO;  // 加载开始事件
@@ -45,16 +48,32 @@ namespace Transition
         {
             loadEventSO.LoadRequestEvent += OnLoadRequestEvent;  // 订阅场景加载请求事件
             newGameEvent.OnEventRaised += NewGame;
+            backToMenuEvent.OnEventRaised += OnBackToMenuEvent;
+            ISavable savable = this;
+            savable.RegisterSaveData();
         }
         private void OnDisable()
         {
             loadEventSO.LoadRequestEvent -= OnLoadRequestEvent;  // 取消订阅场景加载请求事件
             newGameEvent.OnEventRaised -= NewGame;
+            backToMenuEvent.OnEventRaised -= OnBackToMenuEvent;
+            ISavable savable = this;
+            savable.UnRegisterSaveData();
         }
+
+        private void OnBackToMenuEvent()
+        {
+            _sceneToLoad = menuScene;
+            _posToGo = menuPosition;
+            loadEventSO.RaiseEvent(_sceneToLoad, _posToGo, true);
+        }
+
         private void Start()
         {
             // NewGame();
-            loadEventSO.RaiseEvent(menuScene, menuPosition, true);  // 触发场景加载请求事件
+            _sceneToLoad = menuScene;
+            _posToGo = menuPosition;
+            loadEventSO.RaiseEvent(_sceneToLoad, _posToGo, true); // 触发场景加载请求事件
         }
 
     
@@ -140,6 +159,29 @@ namespace Transition
             //若加载场景不为菜单
             if (currentLoadScene.sceneType != SceneType.Menu)
                 if(afterSceneLoadedEvent) afterSceneLoadedEvent.RaiseEvent();  // 触发场景加载后广播事件
+        }
+
+        public DataDefinition GetDataID()
+        {
+            return GetComponent<DataDefinition>();
+        }
+
+        public void GetSaveData(Data data)
+        {
+            data.SaveGameScene(currentLoadScene);
+        }
+
+        public void LoadData(Data data)
+        {
+            var playerID = playerTrans.GetComponent<DataDefinition>().ID;
+            if (data.CharacterPosDict.TryGetValue(playerID, out var value))
+            {
+                _posToGo = value.ToVector3();
+                _sceneToLoad = data.GetSavedScene();
+                
+                loadEventSO.RaiseEvent(_sceneToLoad, _posToGo, true);  // 触发场景加载请求事件  
+            }
+            
         }
     }
 }
