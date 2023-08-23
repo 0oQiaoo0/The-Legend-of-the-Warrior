@@ -361,7 +361,7 @@ public partial class @PlayerInoutControl: IInputActionCollection2, IDisposable
                 {
                     ""name"": """",
                     ""id"": ""f229abb4-b558-45bf-8286-62eba8fea437"",
-                    ""path"": ""<Gamepad>/buttonWest"",
+                    ""path"": ""<Gamepad>/buttonNorth"",
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": ""Gamepad"",

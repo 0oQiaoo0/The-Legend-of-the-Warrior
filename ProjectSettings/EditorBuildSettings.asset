@@ -5,8 +5,8 @@ EditorBuildSettings:
   m_ObjectHideFlags: 0
   serializedVersion: 2
   m_Scenes:
-  - enabled: 0
-    path: Assets/Scenes/Grasslands.unity
-    guid: 8c9cfa26abfee488c85f1582747f6a02
+  - enabled: 1
+    path: Assets/Scenes/Initialization.unity
+    guid: 91f74cd3cc8da1641b02dc4488ce0b74
   m_configObjects:
     com.unity.addressableassets: {fileID: 11400000, guid: 309954b33edec134693748c4ff71eb97, type: 2}

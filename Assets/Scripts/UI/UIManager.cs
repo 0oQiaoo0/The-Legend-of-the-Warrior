@@ -1,8 +1,9 @@
 using General;
 using SO;
 using UnityEngine;
+using UnityEngine.Audio;
 using UnityEngine.EventSystems;
-using UnityEngine.Serialization;
+using UnityEngine.UI;
 using Utilities;
 
 namespace UI
@@ -22,6 +23,31 @@ namespace UI
         public GameObject mainCanvas;
         public GameObject gameOverPanel;
         public GameObject restartButton;
+        public GameObject mobileTouch;
+        public Button settingButton;
+        public GameObject pausePanel;
+        public AudioMixer audioMixer;
+        public Slider volumeSlider;
+
+        private void Awake()
+        {
+            #if UNITY_STANDALONE
+            mobileTouch.SetActive(false);
+            #else
+            mobileTouch.SetActive(true);
+            #endif
+            
+            settingButton.onClick.AddListener(TogglePausePanel);
+            
+            audioMixer.GetFloat("MasterVolume", out var value);
+            volumeSlider.value = (value + 80f) / 100f;
+        }
+
+        private void TogglePausePanel()
+        {
+            pausePanel.SetActive(!pausePanel.activeInHierarchy);
+            Time.timeScale = pausePanel.activeInHierarchy ? 0 : 1;
+        }
         
         private void OnEnable()
         {
